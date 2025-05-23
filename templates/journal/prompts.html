@@ -1,0 +1,418 @@
+{% extends "base.html" %}
+
+{% block title %}Инспирација за пишување - МенталноЗдравје{% endblock %}
+
+{% block content %}
+<div class="max-w-6xl mx-auto">
+    <!-- Header -->
+    <div class="text-center mb-8">
+        <div class="text-6xl mb-4">💡</div>
+        <h1 class="text-4xl font-bold text-purple-800 mb-2">Инспирација за пишување</h1>
+        <p class="text-purple-600 text-lg">Откријте нови начини за самореflексија и личен раст</p>
+    </div>
+
+    <!-- Quick Start Section -->
+    <div class="card mb-8 bg-gradient-to-r from-purple-50 via-pink-50 to-purple-50">
+        <div class="text-center">
+            <div class="text-4xl mb-4">🎲</div>
+            <h2 class="text-2xl font-bold text-purple-800 mb-4">Случајно прашање</h2>
+            <p class="text-purple-600 mb-6">Не знаете од каде да започнете? Нека ви помогнеме!</p>
+
+            <div class="bg-white rounded-xl p-6 shadow-inner mb-6">
+                <p class="text-lg text-purple-800 font-medium" id="random-question">
+                    Кликнете на копчето за да добиете инспирација!
+                </p>
+            </div>
+
+            <div class="flex flex-wrap justify-center gap-4">
+                <button id="get-random-question" class="btn-primary">
+                    🎯 Дајте ми прашање
+                </button>
+                <button id="use-question" class="btn-secondary" style="display: none;">
+                    ✏️ Користи го ова прашање
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Categories Tabs -->
+    <div class="mb-8">
+        <div class="flex flex-wrap justify-center gap-2 mb-6">
+            <button class="category-tab active" data-category="all">
+                🌟 Сите
+            </button>
+            {% for category in categories %}
+            <button class="category-tab" data-category="{{ category }}">
+                {% if category == 'Самореflексија' %}🔍
+                {% elif category == 'Емоции' %}❤️
+                {% elif category == 'Цели' %}🎯
+                {% elif category == 'Односи' %}👥
+                {% elif category == 'Благодарност' %}🙏
+                {% endif %}
+                {{ category }}
+            </button>
+            {% endfor %}
+        </div>
+    </div>
+
+    <!-- Prompts Grid -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8" id="prompts-grid">
+        <!-- Self-reflection prompts -->
+        <div class="prompt-card card hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2" data-category="Самореflексија">
+            <div class="text-3xl mb-3">🔍</div>
+            <h3 class="text-lg font-semibold text-purple-800 mb-3">Самореflексија</h3>
+            <div class="space-y-2 text-sm text-purple-700">
+                <p>• Што нов научив за себе оваа недела?</p>
+                <p>• Кога последен пат излегов од мојата зона на комфор?</p>
+                <p>• Кои се моите најголеми јачини?</p>
+                <p>• Што би сакал/а да промениам во себе?</p>
+            </div>
+            <button class="mt-4 text-purple-600 hover:text-purple-800 font-medium transition-colors duration-200"
+                    onclick="useCategory('Самореflексија')">
+                Избери →
+            </button>
+        </div>
+
+        <!-- Emotions prompts -->
+        <div class="prompt-card card hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2" data-category="Емоции">
+            <div class="text-3xl mb-3">❤️</div>
+            <h3 class="text-lg font-semibold text-purple-800 mb-3">Емоции</h3>
+            <div class="space-y-2 text-sm text-purple-700">
+                <p>• Која емоција ме водеше денес?</p>
+                <p>• Кога се чувствувам најавтентично?</p>
+                <p>• Како се справувам со тешките емоции?</p>
+                <p>• Што ме прави навистина среќен/на?</p>
+            </div>
+            <button class="mt-4 text-purple-600 hover:text-purple-800 font-medium transition-colors duration-200"
+                    onclick="useCategory('Емоции')">
+                Избери →
+            </button>
+        </div>
+
+        <!-- Goals prompts -->
+        <div class="prompt-card card hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2" data-category="Цели">
+            <div class="text-3xl mb-3">🎯</div>
+            <h3 class="text-lg font-semibold text-purple-800 mb-3">Цели</h3>
+            <div class="space-y-2 text-sm text-purple-700">
+                <p>• Што сакам да постигнам во следните 6 месеци?</p>
+                <p>• Кои навики сакам да ги развијам?</p>
+                <p>• Што ме спречува да ги постигнам моите цели?</p>
+                <p>• Како ќе изгледа мојот идеален ден?</p>
+            </div>
+            <button class="mt-4 text-purple-600 hover:text-purple-800 font-medium transition-colors duration-200"
+                    onclick="useCategory('Цели')">
+                Избери →
+            </button>
+        </div>
+
+        <!-- Relationships prompts -->
+        <div class="prompt-card card hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2" data-category="Односи">
+            <div class="text-3xl mb-3">👥</div>
+            <h3 class="text-lg font-semibold text-purple-800 mb-3">Односи</h3>
+            <div class="space-y-2 text-sm text-purple-700">
+                <p>• Кој човек најмногу влијае на мојот живот?</p>
+                <p>• Како можам да бидам подобар пријател?</p>
+                <p>• Што сакам луѓето да знаат за мене?</p>
+                <p>• Кој однос сакам да го подобрам?</p>
+            </div>
+            <button class="mt-4 text-purple-600 hover:text-purple-800 font-medium transition-colors duration-200"
+                    onclick="useCategory('Односи')">
+                Избери →
+            </button>
+        </div>
+
+        <!-- Gratitude prompts -->
+        <div class="prompt-card card hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2" data-category="Благодарност">
+            <div class="text-3xl mb-3">🙏</div>
+            <h3 class="text-lg font-semibold text-purple-800 mb-3">Благодарност</h3>
+            <div class="space-y-2 text-sm text-purple-700">
+                <p>• За кое искуство сум најблагодарен/на?</p>
+                <p>• Кој ми помогна да растам како личност?</p>
+                <p>• Што од мојот живот го земам здраво за готово?</p>
+                <p>• Како можам да покажам благодарност денес?</p>
+            </div>
+            <button class="mt-4 text-purple-600 hover:text-purple-800 font-medium transition-colors duration-200"
+                    onclick="useCategory('Благодарност')">
+                Избери →
+            </button>
+        </div>
+
+        <!-- Creative prompts -->
+        <div class="prompt-card card hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2" data-category="Креативност">
+            <div class="text-3xl mb-3">🎨</div>
+            <h3 class="text-lg font-semibold text-purple-800 mb-3">Креативност</h3>
+            <div class="space-y-2 text-sm text-purple-700">
+                <p>• Ако можев да живеам било каде, каде би било?</p>
+                <p>• Како би изгледал мојот перфектен ден?</p>
+                <p>• Што би направил/а ако немав страв?</p>
+                <p>• Кој сон сакам да го остварам?</p>
+            </div>
+            <button class="mt-4 text-purple-600 hover:text-purple-800 font-medium transition-colors duration-200"
+                    onclick="useCategory('Креативност')">
+                Избери →
+            </button>
+        </div>
+    </div>
+
+    <!-- Popular Questions Section -->
+    <div class="card mb-8">
+        <h2 class="text-2xl font-bold text-purple-800 mb-6 text-center">🔥 Популарни прашања</h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {% for question in questions[:10] %}
+            <div class="question-item bg-purple-50 rounded-lg p-4 hover:bg-purple-100 transition-colors duration-200 cursor-pointer"
+                 onclick="selectQuestion('{{ question }}')">
+                <div class="flex items-start space-x-3">
+                    <div class="text-purple-500 text-lg">💭</div>
+                    <p class="text-purple-800 font-medium">{{ question }}</p>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <!-- Writing Tips Section -->
+    <div class="card mb-8 bg-gradient-to-r from-blue-50 to-indigo-50">
+        <h2 class="text-2xl font-bold text-purple-800 mb-6 text-center">✍️ Совети за пишување</h2>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div class="text-center">
+                <div class="text-4xl mb-3">⏰</div>
+                <h3 class="font-semibold text-purple-800 mb-2">Посветете време</h3>
+                <p class="text-purple-600 text-sm">Одвојте 10-15 минути дневно за пишување. Квалитетот е поважен од количеството.</p>
+            </div>
+            <div class="text-center">
+                <div class="text-4xl mb-3">❤️</div>
+                <h3 class="font-semibold text-purple-800 mb-2">Бидете искрени</h3>
+                <p class="text-purple-600 text-sm">Пишувајте од срце. Ова е ваш безбеден простор за искрени мисли и чувства.</p>
+            </div>
+            <div class="text-center">
+                <div class="text-4xl mb-3">🌱</div>
+                <h3 class="font-semibold text-purple-800 mb-2">Растете полека</h3>
+                <p class="text-purple-600 text-sm">Не очекувајте совршенство. Секој ден е можност за нов почеток и раст.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Quick Actions -->
+    <div class="flex flex-wrap justify-center gap-4">
+        <a href="{{ url_for('journal.index') }}" class="btn-primary">
+            ✏️ Започни со пишување
+        </a>
+        <a href="{{ url_for('journal.history') }}" class="btn-secondary">
+            📚 Погледај записи
+        </a>
+        <button id="save-prompts" class="btn-secondary">
+            💾 Зачувај омилени прашања
+        </button>
+    </div>
+</div>
+
+<!-- Modal for selected question -->
+<div id="question-modal" class="fixed inset-0 bg-black bg-opacity-50 hidden z-50 flex items-center justify-center p-4">
+    <div class="bg-white rounded-2xl p-8 max-w-2xl w-full">
+        <div class="text-center mb-6">
+            <div class="text-4xl mb-4">✨</div>
+            <h3 class="text-2xl font-bold text-purple-800 mb-2">Избрано прашање</h3>
+        </div>
+
+        <div class="bg-purple-50 rounded-xl p-6 mb-6">
+            <p class="text-lg text-purple-800 font-medium" id="selected-question"></p>
+        </div>
+
+        <div class="flex flex-wrap justify-center gap-4">
+            <button onclick="startWriting()" class="btn-primary">
+                ✍️ Започни да пишуваш
+            </button>
+            <button onclick="getAnotherQuestion()" class="btn-secondary">
+                🔄 Друго прашање
+            </button>
+            <button onclick="closeModal()" class="btn-secondary">
+                ❌ Затвори
+            </button>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+    const allQuestions = {{ questions|tojson }};
+    const categoryQuestions = {
+        'Самореflексија': [
+            'Што нов научив за себе оваа недела?',
+            'Кога последен пат излегов од мојата зона на комфор?',
+            'Кои се моите најголеми јачини?',
+            'Што би сакал/а да промениам во себе?',
+            'Како се менувам како личност?',
+            'Што ме прави уникатен/на?'
+        ],
+        'Емоции': [
+            'Која емоција ме водеше денес?',
+            'Кога се чувствувам најавтентично?',
+            'Како се справувам со тешките емоции?',
+            'Што ме прави навистина среќен/на?',
+            'Кога последен пат плачев и зошто?',
+            'Како покажувам љубов кон себе?'
+        ],
+        'Цели': [
+            'Што сакам да постигнам во следните 6 месеци?',
+            'Кои навики сакам да ги развијам?',
+            'Што ме спречува да ги постигнам моите цели?',
+            'Како ќе изгледа мојот идеален ден?',
+            'Која цел ме плаши најмногу?',
+            'Што сакам да научам нешто ново?'
+        ],
+        'Односи': [
+            'Кој човек најмногу влијае на мојот живот?',
+            'Како можам да бидам подобар пријател?',
+            'Што сакам луѓето да знаат за мене?',
+            'Кој однос сакам да го подобрам?',
+            'Како покажувам дека ги сакам луѓето?',
+            'Кој ми е најголемата поддршка?'
+        ],
+        'Благодарност': [
+            'За кое искуство сум најблагодарен/на?',
+            'Кој ми помогна да растам како личност?',
+            'Што од мојот живот го земам здраво за готово?',
+            'Како можам да покажам благодарност денес?',
+            'За која способност сум благодарен/на?',
+            'Кој момент од деневе ме исполни со радост?'
+        ],
+        'Креативност': [
+            'Ако можев да живеам било каде, каде би било?',
+            'Како би изгледал мојот перфектен ден?',
+            'Што би направил/а ако немав страв?',
+            'Кој сон сакам да го остварам?',
+            'Ако можев да научам било што, што би било?',
+            'Кој историски личност би сакал/а да запознаам?'
+        ]
+    };
+
+    let currentQuestion = '';
+
+    // Category tabs functionality
+    document.querySelectorAll('.category-tab').forEach(tab => {
+        tab.addEventListener('click', function() {
+            // Remove active class from all tabs
+            document.querySelectorAll('.category-tab').forEach(t => t.classList.remove('active'));
+            // Add active class to clicked tab
+            this.classList.add('active');
+
+            const category = this.dataset.category;
+            filterPrompts(category);
+        });
+    });
+
+    function filterPrompts(category) {
+        const promptCards = document.querySelectorAll('.prompt-card');
+
+        promptCards.forEach(card => {
+            if (category === 'all' || card.dataset.category === category) {
+                card.style.display = 'block';
+            } else {
+                card.style.display = 'none';
+            }
+        });
+    }
+
+    // Random question functionality
+    document.getElementById('get-random-question').addEventListener('click', function() {
+        const randomQuestion = allQuestions[Math.floor(Math.random() * allQuestions.length)];
+        document.getElementById('random-question').textContent = randomQuestion;
+        document.getElementById('use-question').style.display = 'inline-block';
+        currentQuestion = randomQuestion;
+
+        // Add animation
+        const questionEl = document.getElementById('random-question');
+        questionEl.style.opacity = '0';
+        questionEl.style.transform = 'translateY(10px)';
+
+        setTimeout(() => {
+            questionEl.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+            questionEl.style.opacity = '1';
+            questionEl.style.transform = 'translateY(0)';
+        }, 100);
+    });
+
+    document.getElementById('use-question').addEventListener('click', function() {
+        selectQuestion(currentQuestion);
+    });
+
+    function useCategory(category) {
+        const questions = categoryQuestions[category];
+        const randomQuestion = questions[Math.floor(Math.random() * questions.length)];
+        selectQuestion(randomQuestion);
+    }
+
+    function selectQuestion(question) {
+        currentQuestion = question;
+        document.getElementById('selected-question').textContent = question;
+        document.getElementById('question-modal').classList.remove('hidden');
+    }
+
+    function closeModal() {
+        document.getElementById('question-modal').classList.add('hidden');
+    }
+
+    function startWriting() {
+        // Store the question in session storage for use in the journal
+        sessionStorage.setItem('selectedQuestion', currentQuestion);
+        window.location.href = '{{ url_for("journal.index") }}';
+    }
+
+    function getAnotherQuestion() {
+        const randomQuestion = allQuestions[Math.floor(Math.random() * allQuestions.length)];
+        selectQuestion(randomQuestion);
+    }
+
+    // Save prompts functionality
+    document.getElementById('save-prompts').addEventListener('click', function() {
+        showNotification('Функцијата за зачувување на омилени прашања наскоро!', 'info');
+    });
+
+    // Close modal when clicking outside
+    document.getElementById('question-modal').addEventListener('click', function(e) {
+        if (e.target === this) {
+            closeModal();
+        }
+    });
+
+    // Keyboard navigation
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') {
+            closeModal();
+        }
+    });
+
+    // Animate prompt cards on load
+    const promptCards = document.querySelectorAll('.prompt-card');
+    promptCards.forEach((card, index) => {
+        card.style.opacity = '0';
+        card.style.transform = 'translateY(20px)';
+
+        setTimeout(() => {
+            card.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+            card.style.opacity = '1';
+            card.style.transform = 'translateY(0)';
+        }, index * 100);
+    });
+</script>
+
+<style>
+    .category-tab {
+        @apply px-4 py-2 rounded-full text-sm font-medium transition-all duration-200 cursor-pointer;
+        @apply bg-purple-100 text-purple-700 hover:bg-purple-200;
+    }
+
+    .category-tab.active {
+        @apply bg-purple-600 text-white;
+    }
+
+    .question-item:hover {
+        transform: translateX(4px);
+    }
+
+    #question-modal {
+        backdrop-filter: blur(4px);
+    }
+</style>
+{% endblock %}

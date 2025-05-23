@@ -1,0 +1,194 @@
+{% extends "base.html" %}
+
+{% block title %}МенталноЗдравје - Почетна{% endblock %}
+
+{% block content %}
+<div class="mb-8">
+    <div class="card">
+        <div class="flex items-center justify-between mb-6">
+            <div>
+                <h1 class="text-3xl font-bold text-purple-800 mb-2">
+                    Добредојде во твојот дневник! 💜
+                </h1>
+                <p class="text-purple-600">Ден за ден кон подобро ментално здравје</p>
+            </div>
+            <div class="text-6xl">🌸</div>
+        </div>
+
+        <!-- Daily Quote -->
+        <div class="bg-gradient-to-r from-purple-100 to-pink-100 p-6 rounded-xl mb-6">
+            <h3 class="text-lg font-semibold text-purple-800 mb-2">💫 Мотивација за денес</h3>
+            <p class="text-purple-700 italic text-lg leading-relaxed">{{ daily_quote }}</p>
+        </div>
+
+        <!-- Quick Stats -->
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+            <div class="text-center p-4 bg-gradient-to-br from-green-100 to-green-200 rounded-xl">
+                <div class="text-2xl mb-2">
+                    {% if quick_stats.journal_done %}✅{% else %}⏳{% endif %}
+                </div>
+                <p class="text-sm font-medium text-green-800">Дневник</p>
+                <p class="text-xs text-green-600">
+                    {% if quick_stats.journal_done %}Готово{% else %}Чека{% endif %}
+                </p>
+            </div>
+
+            <div class="text-center p-4 bg-gradient-to-br from-blue-100 to-blue-200 rounded-xl">
+                <div class="text-2xl mb-2">
+                    {% if quick_stats.mood_logged %}😊{% else %}❓{% endif %}
+                </div>
+                <p class="text-sm font-medium text-blue-800">Расположение</p>
+                <p class="text-xs text-blue-600">
+                    {% if quick_stats.mood_logged %}Забележано{% else %}Додај{% endif %}
+                </p>
+            </div>
+
+            <div class="text-center p-4 bg-gradient-to-br from-yellow-100 to-yellow-200 rounded-xl">
+                <div class="text-2xl mb-2">✅</div>
+                <p class="text-sm font-medium text-yellow-800">Навики</p>
+                <p class="text-xs text-yellow-600">{{ quick_stats.habits_count }} денес</p>
+            </div>
+
+            <div class="text-center p-4 bg-gradient-to-br from-purple-100 to-purple-200 rounded-xl">
+                <div class="text-2xl mb-2">🎯</div>
+                <p class="text-sm font-medium text-purple-800">Цели</p>
+                <p class="text-xs text-purple-600">{{ quick_stats.active_goals }} активни</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Quick Actions -->
+<div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+    <!-- Journal Entry -->
+    <div class="card hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-1">
+        <div class="text-center">
+            <div class="text-5xl mb-4">📝</div>
+            <h3 class="text-xl font-bold text-purple-800 mb-2">Дневник</h3>
+            <p class="text-purple-600 mb-4">Запиши ги твоите мисли и чувства</p>
+            <a href="{{ url_for('journal.index') }}" class="btn-primary inline-block">
+                {% if quick_stats.journal_done %}Прегледај{% else %}Почни да пишуваш{% endif %}
+            </a>
+        </div>
+    </div>
+
+    <!-- Mood Tracking -->
+    <div class="card hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-1">
+        <div class="text-center">
+            <div class="text-5xl mb-4">😊</div>
+            <h3 class="text-xl font-bold text-purple-800 mb-2">Расположение</h3>
+            <p class="text-purple-600 mb-4">Следи го твоето секојдневно расположение</p>
+            <a href="{{ url_for('mood.index') }}" class="btn-primary inline-block">
+                {% if quick_stats.mood_logged %}Прегледај{% else %}Додај расположение{% endif %}
+            </a>
+        </div>
+    </div>
+
+    <!-- Habits -->
+    <div class="card hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-1">
+        <div class="text-center">
+            <div class="text-5xl mb-4">✅</div>
+            <h3 class="text-xl font-bold text-purple-800 mb-2">Навики</h3>
+            <p class="text-purple-600 mb-4">Гради позитивни секојдневни навики</p>
+            <a href="{{ url_for('habits.index') }}" class="btn-primary inline-block">Управувај навики</a>
+        </div>
+    </div>
+
+    <!-- Goals -->
+    <div class="card hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-1">
+        <div class="text-center">
+            <div class="text-5xl mb-4">🎯</div>
+            <h3 class="text-xl font-bold text-purple-800 mb-2">Цели</h3>
+            <p class="text-purple-600 mb-4">Постави и следи ги твоите цели</p>
+            <a href="{{ url_for('goals.index') }}" class="btn-primary inline-block">Прегледај цели</a>
+        </div>
+    </div>
+
+    <!-- Resources -->
+    <div class="card hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-1">
+        <div class="text-center">
+            <div class="text-5xl mb-4">📚</div>
+            <h3 class="text-xl font-bold text-purple-800 mb-2">Ресурси</h3>
+            <p class="text-purple-600 mb-4">Корисни совети и техники</p>
+            <a href="{{ url_for('resources.index') }}" class="btn-primary inline-block">Истражи</a>
+        </div>
+    </div>
+
+    <!-- Analytics -->
+    <div class="card hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-1">
+        <div class="text-center">
+            <div class="text-5xl mb-4">📊</div>
+            <h3 class="text-xl font-bold text-purple-800 mb-2">Статистики</h3>
+            <p class="text-purple-600 mb-4">Анализирај го твојот прогрес</p>
+            <a href="{{ url_for('analytics.dashboard') }}" class="btn-primary inline-block">Прегледај</a>
+        </div>
+    </div>
+</div>
+
+<!-- Mental Health Tips -->
+<div class="card">
+    <h2 class="text-2xl font-bold text-purple-800 mb-6">💡 Совети за ментално здравје</h2>
+
+    <div class="grid md:grid-cols-2 gap-6">
+        <div class="bg-gradient-to-br from-blue-50 to-blue-100 p-6 rounded-xl">
+            <h3 class="font-bold text-blue-800 mb-3">🧘 Дишење и релаксација</h3>
+            <ul class="text-blue-700 space-y-2">
+                <li>• Длабоко дишење 4-7-8 (вдиши 4, задржи 7, издиши 8)</li>
+                <li>• Медитација од 5-10 минути дневно</li>
+                <li>• Прогресивна мускулна релаксација</li>
+            </ul>
+        </div>
+
+        <div class="bg-gradient-to-br from-green-50 to-green-100 p-6 rounded-xl">
+            <h3 class="font-bold text-green-800 mb-3">🏃 Физичка активност</h3>
+            <ul class="text-green-700 space-y-2">
+                <li>• Дневна прошетка од 20-30 минути</li>
+                <li>• Јога или стречинг</li>
+                <li>• Танцување или друга забавна активност</li>
+            </ul>
+        </div>
+
+        <div class="bg-gradient-to-br from-yellow-50 to-yellow-100 p-6 rounded-xl">
+            <h3 class="font-bold text-yellow-800 mb-3">🌱 Здрави навики</h3>
+            <ul class="text-yellow-700 space-y-2">
+                <li>• Редовен сон од 7-9 часа</li>
+                <li>• Здрава исхрана со многу води</li>
+                <li>• Ограничи го времето на социјални мрежи</li>
+            </ul>
+        </div>
+
+        <div class="bg-gradient-to-br from-pink-50 to-pink-100 p-6 rounded-xl">
+            <h3 class="font-bold text-pink-800 mb-3">💝 Самогрижа</h3>
+            <ul class="text-pink-700 space-y-2">
+                <li>• Води дневник со благодарност</li>
+                <li>• Прави нешто што те радува секој ден</li>
+                <li>• Побарај помош кога ти треба</li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+<!-- Emergency Resources -->
+<div class="mt-8 card bg-gradient-to-r from-purple-600 to-pink-600 text-white">
+    <div class="text-center">
+        <h2 class="text-2xl font-bold mb-4">🆘 Итна помош</h2>
+        <p class="mb-4">Ако се чувствуваш во криза или имаш суицидални мисли:</p>
+        <div class="grid md:grid-cols-2 gap-4">
+            <div class="bg-white/20 p-4 rounded-xl">
+                <h3 class="font-bold mb-2">Национална линија за превенција</h3>
+                <a href="tel:023061661" class="text-2xl font-bold hover:underline">02 3061-661</a>
+                <p class="text-sm mt-1">24/7 достапно</p>
+            </div>
+            <div class="bg-white/20 p-4 rounded-xl">
+                <h3 class="font-bold mb-2">Спешна медицинска</h3>
+                <a href="tel:194" class="text-2xl font-bold hover:underline">194</a>
+                <p class="text-sm mt-1">Итни случаи</p>
+            </div>
+        </div>
+        <p class="mt-4 text-sm opacity-90">
+            Помни: Побарувањето помош е знак на сила, не на слабост.
+            Не си сам/а во оваа борба. 💜
+        </p>
+    </div>
+</div>
+{% endblock %}

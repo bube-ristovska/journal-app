@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html lang="mk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Статистики - МенталноЗдравје{% endblock %}</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        purple: {
+                            50: '#faf5ff',
+                            100: '#f3e8ff',
+                            200: '#e9d5ff',
+                            300: '#d8b4fe',
+                            400: '#c084fc',
+                            500: '#a855f7',
+                            600: '#9333ea',
+                            700: '#7c3aed',
+                            800: '#6b21a8',
+                            900: '#581c87',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-gradient-to-br from-purple-50 via-white to-purple-100 min-h-screen">
+    <!-- Navigation -->
+    <nav class="bg-white/80 backdrop-blur-md shadow-lg sticky top-0 z-50">
+        <div class="container mx-auto px-4">
+            <div class="flex justify-between items-center py-4">
+                <div class="flex items-center space-x-2">
+                    <div class="text-2xl">💜</div>
+                    <h1 class="text-xl font-bold text-purple-800">Мој Дневник</h1>
+                </div>
+
+                <div class="hidden md:flex space-x-6">
+                    <a href="/" class="nav-link">🏠 Почетна</a>
+                    <a href="/journal" class="nav-link">📝 Дневник</a>
+                    <a href="/habits" class="nav-link">✅ Навики</a>
+                    <a href="/mood" class="nav-link">😊 Расположение</a>
+                    <a href="/goals" class="nav-link">🎯 Цели</a>
+                    <a href="/resources" class="nav-link">📚 Ресурси</a>
+                    <a href="/analytics" class="nav-link font-bold bg-purple-100">📊 Статистики</a>
+                </div>
+
+                <!-- Mobile menu button -->
+                <button class="md:hidden" onclick="toggleMobileMenu()">
+                    <div class="w-6 h-6 flex flex-col justify-around">
+                        <div class="w-full h-0.5 bg-purple-600"></div>
+                        <div class="w-full h-0.5 bg-purple-600"></div>
+                        <div class="w-full h-0.5 bg-purple-600"></div>
+                    </div>
+                </button>
+            </div>
+
+            <!-- Mobile menu -->
+            <div id="mobile-menu" class="hidden md:hidden pb-4">
+                <div class="flex flex-col space-y-2">
+                    <a href="/" class="nav-link-mobile">🏠 Почетна</a>
+                    <a href="/journal" class="nav-link-mobile">📝 Дневник</a>
+                    <a href="/habits" class="nav-link-mobile">✅ Навики</a>
+                    <a href="/mood" class="nav-link-mobile">😊 Расположение</a>
+                    <a href="/goals" class="nav-link-mobile">🎯 Цели</a>
+                    <a href="/resources" class="nav-link-mobile">📚 Ресурси</a>
+                    <a href="/analytics" class="nav-link-mobile font-bold bg-purple-100">📊 Статистики</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main content -->
+    <main class="container mx-auto px-4 py-8 max-w-6xl">
+        <!-- Header -->
+        <div class="mb-8">
+            <h1 class="text-4xl font-bold text-purple-800 mb-2">📊 Твои Статистики</h1>
+            <p class="text-purple-600 text-lg">Преглед на твојот напредок и трендови</p>
+        </div>
+
+        <!-- Navigation tabs -->
+        <div class="mb-8">
+            <div class="flex space-x-4 border-b border-purple-200">
+                <a href="/analytics" class="px-6 py-3 font-medium text-purple-700 border-b-2 border-purple-500 bg-purple-50">
+                    Статистики
+                </a>
+                <a href="/analytics/insights" class="px-6 py-3 font-medium text-purple-600 hover:text-purple-700 hover:bg-purple-50 rounded-t-lg transition-all">
+                    Увиди
+                </a>
+            </div>
+        </div>
+
+        <!-- Quick Stats Cards -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+            <div class="card bg-gradient-to-br from-purple-500 to-purple-600 text-white">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-purple-100 text-sm font-medium">Дневнички записи</p>
+                        <p class="text-3xl font-bold">{{ stats.journal_entries }}</p>
+                    </div>
+                    <div class="text-4xl opacity-80">📝</div>
+                </div>
+            </div>
+
+            <div class="card bg-gradient-to-br from-blue-500 to-blue-600 text-white">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-blue-100 text-sm font-medium">Активни цели</p>
+                        <p class="text-3xl font-bold">{{ stats.active_goals }}</p>
+                    </div>
+                    <div class="text-4xl opacity-80">🎯</div>
+                </div>
+            </div>
+
+            <div class="card bg-gradient-to-br from-green-500 to-green-600 text-white">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-green-100 text-sm font-medium">Завршени цели</p>
+                        <p class="text-3xl font-bold">{{ stats.completed_goals }}</p>
+                    </div>
+                    <div class="text-4xl opacity-80">✅</div>
+                </div>
+            </div>
+
+            <div class="card bg-gradient-to-br from-pink-500 to-pink-600 text-white">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-pink-100 text-sm font-medium">Записи за расположение</p>
+                        <p class="text-3xl font-bold">{{ stats.mood_entries }}</p>
+                    </div>
+                    <div class="text-4xl opacity-80">😊</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Mood Trend Chart -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+            <div class="card">
+                <div class="flex items-center justify-between mb-6">
+                    <h2 class="text-2xl font-bold text-purple-800">📈 Трендови на расположение</h2>
+                    <div class="text-sm text-purple-600 bg-purple-100 px-3 py-1 rounded-full">
+                        Последни 30 дена
+                    </div>
+                </div>
+                <div class="h-80">
+                    <canvas id="moodChart"></canvas>
+                </div>
+            </div>
+
+            <!-- Weekly Mood Average -->
+            <div class="space-y-6">
+                <div class="card bg-gradient-to-r from-purple-100 to-pink-100">
+                    <h3 class="text-xl font-bold text-purple-800 mb-4">📊 Неделен просек</h3>
+                    <div class="flex items-center justify-center">
+                        <div class="text-center">
+                            <div class="text-6xl font-bold text-purple-600 mb-2">{{ avg_mood }}</div>
+                            <p class="text-purple-700 font-medium">Просечно расположение</p>
+                            <div class="mt-4">
+                                {% if avg_mood >= 4 %}
+                                    <div class="text-4xl">😊</div>
+                                    <p class="text-green-600 font-medium">Одлично!</p>
+                                {% elif avg_mood >= 3 %}
+                                    <div class="text-4xl">🙂</div>
+                                    <p class="text-blue-600 font-medium">Добро</p>
+                                {% elif avg_mood >= 2 %}
+                                    <div class="text-4xl">😐</div>
+                                    <p class="text-yellow-600 font-medium">Умерено</p>
+                                {% else %}
+                                    <div class="text-4xl">😟</div>
+                                    <p class="text-red-600 font-medium">Потребна поддршка</p>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Quick Actions -->
+                <div class="card">
+                    <h3 class="text-xl font-bold text-purple-800 mb-4">⚡ Брзи акции</h3>
+                    <div class="space-y-3">
+                        <a href="/mood" class="block btn-secondary text-center">
+                            😊 Запиши расположение
+                        </a>
+                        <a href="/journal" class="block btn-secondary text-center">
+                            📝 Нов дневнички запис
+                        </a>
+                        <a href="/analytics/insights" class="block btn-primary text-center">
+                            💡 Погледни увиди
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Habit Completion Rates -->
+        <div class="card">
+            <h2 class="text-2xl font-bold text-purple-800 mb-6">✅ Успешност на навики</h2>
+            {% if habit_stats %}
+                <div class="space-y-4">
+                    {% for habit in habit_stats %}
+                        <div class="flex items-center justify-between p-4 bg-purple-50 rounded-xl">
+                            <div class="flex items-center space-x-4">
+                                <div class="text-3xl">{{ habit.icon }}</div>
+                                <div>
+                                    <h3 class="font-medium text-purple-800">{{ habit.name }}</h3>
+                                    <p class="text-sm text-purple-600">Последни 30 дена</p>
+                                </div>
+                            </div>
+                            <div class="flex items-center space-x-4">
+                                <div class="text-right">
+                                    <div class="text-2xl font-bold text-purple-700">{{ "%.0f"|format(habit.completion_rate) }}%</div>
+                                </div>
+                                <div class="w-32 bg-purple-200 rounded-full h-3">
+                                    <div class="bg-gradient-to-r from-purple-500 to-purple-600 h-3 rounded-full transition-all duration-300"
+                                         style="width: {{ habit.completion_rate }}%"></div>
+                                </div>
+                                {% if habit.completion_rate >= 80 %}
+                                    <div class="text-green-500 text-xl">🏆</div>
+                                {% elif habit.completion_rate >= 60 %}
+                                    <div class="text-blue-500 text-xl">👍</div>
+                                {% elif habit.completion_rate >= 40 %}
+                                    <div class="text-yellow-500 text-xl">⚡</div>
+                                {% else %}
+                                    <div class="text-red-500 text-xl">💪</div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <div class="text-center py-12">
+                    <div class="text-6xl mb-4">📋</div>
+                    <h3 class="text-xl font-medium text-purple-700 mb-2">Нема активни навики</h3>
+                    <p class="text-purple-600 mb-6">Започни со следење на твоите дневни навики за да видиш статистики</p>
+                    <a href="/habits" class="btn-primary">Додај навика</a>
+                </div>
+            {% endif %}
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-purple-800 text-white py-8 mt-16">
+        <div class="container mx-auto px-4 text-center">
+            <p class="mb-4">💜 Грижи се за своето ментално здравје 💜</p>
+            <p class="text-purple-200 text-sm">
+                Ако се чувствуваш во криза, контактирај:
+                <a href="tel:023061661" class="underline font-semibold">02 3061-661</a>
+            </p>
+        </div>
+    </footer>
+
+    <!-- Notification container -->
+    <div id="notifications" class="fixed top-20 right-4 z-50 space-y-2"></div>
+
+    <script>
+        // Mobile menu toggle
+        function toggleMobileMenu() {
+            const menu = document.getElementById('mobile-menu');
+            menu.classList.toggle('hidden');
+        }
+
+        // Notification system
+        function showNotification(message, type = 'success') {
+            const notification = document.createElement('div');
+            const colors = {
+                success: 'bg-green-500',
+                error: 'bg-red-500',
+                warning: 'bg-yellow-500',
+                info: 'bg-blue-500'
+            };
+
+            notification.className = `${colors[type]} text-white px-6 py-3 rounded-lg shadow-lg transform transition-all duration-300 translate-x-full`;
+            notification.textContent = message;
+
+            document.getElementById('notifications').appendChild(notification);
+
+            // Animate in
+            setTimeout(() => {
+                notification.classList.remove('translate-x-full');
+            }, 100);
+
+            // Remove after 4 seconds
+            setTimeout(() => {
+                notification.classList.add('translate-x-full');
+                setTimeout(() => {
+                    notification.remove();
+                }, 300);
+            }, 4000);
+        }
+
+        // Initialize mood chart
+        const moodData = {{ mood_trend|tojson }};
+        const ctx = document.getElementById('moodChart').getContext('2d');
+
+        new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: moodData.map(entry => {
+                    const date = new Date(entry.date);
+                    return date.toLocaleDateString('mk-MK', {
+                        month: 'short',
+                        day: 'numeric'
+                    });
+                }),
+                datasets: [
+                    {
+                        label: 'Расположение',
+                        data: moodData.map(entry => entry.mood),
+                        borderColor: 'rgb(168, 85, 247)',
+                        backgroundColor: 'rgba(168, 85, 247, 0.1)',
+                        borderWidth: 3,
+                        fill: true,
+                        tension: 0.4,
+                        pointBackgroundColor: 'rgb(168, 85, 247)',
+                        pointBorderColor: 'white',
+                        pointBorderWidth: 2,
+                        pointRadius: 6
+                    },
+                    {
+                        label: 'Анксиозност',
+                        data: moodData.map(entry => entry.anxiety),
+                        borderColor: 'rgb(239, 68, 68)',
+                        backgroundColor: 'rgba(239, 68, 68, 0.1)',
+                        borderWidth: 2,
+                        fill: false,
+                        tension: 0.4,
+                        pointBackgroundColor: 'rgb(239, 68, 68)',
+                        pointBorderColor: 'white',
+                        pointBorderWidth: 2,
+                        pointRadius: 4
+                    },
+                    {
+                        label: 'Енергија',
+                        data: moodData.map(entry => entry.energy),
+                        borderColor: 'rgb(34, 197, 94)',
+                        backgroundColor: 'rgba(34, 197, 94, 0.1)',
+                        borderWidth: 2,
+                        fill: false,
+                        tension: 0.4,
+                        pointBackgroundColor: 'rgb(34, 197, 94)',
+                        pointBorderColor: 'white',
+                        pointBorderWidth: 2,
+                        pointRadius: 4
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        display: true,
+                        position: 'top',
+                        labels: {
+                            usePointStyle: true,
+                            padding: 20,
+                            font: {
+                                size: 12,
+                                weight: 'bold'
+                            }
+                        }
+                    },
+                    tooltip: {
+                        backgroundColor: 'rgba(107, 33, 168, 0.9)',
+                        titleColor: 'white',
+                        bodyColor: 'white',
+                        borderColor: 'rgb(168, 85, 247)',
+                        borderWidth: 2,
+                        cornerRadius: 8,
+                        displayColors: true
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        max: 5,
+                        grid: {
+                            color: 'rgba(168, 85, 247, 0.1)'
+                        },
+                        ticks: {
+                            color: 'rgb(107, 33, 168)',
+                            font: {
+                                weight: 'bold'
+                            }
+                        }
+                    },
+                    x: {
+                        grid: {
+                            color: 'rgba(168, 85, 247, 0.1)'
+                        },
+                        ticks: {
+                            color: 'rgb(107, 33, 168)',
+                            font: {
+                                weight: 'bold'
+                            }
+                        }
+                    }
+                },
+                interaction: {
+                    intersect: false,
+                    mode: 'index'
+                },
+                elements: {
+                    line: {
+                        borderCapStyle: 'round'
+                    }
+                }
+            }
+        });
+    </script>
+
+    <style>
+        .nav-link {
+            @apply text-purple-700 hover:text-purple-900 font-medium px-3 py-2 rounded-lg hover:bg-purple-100 transition-all duration-200;
+        }
+
+        .nav-link-mobile {
+            @apply text-purple-700 hover:text-purple-900 font-medium px-3 py-2 rounded-lg hover:bg-purple-100 transition-all duration-200 block;
+        }
+
+        .btn-primary {
+            @apply bg-purple-600 hover:bg-purple-700 text-white px-6 py-3 rounded-xl font-medium transition-all duration-300 transform hover:scale-105 shadow-lg;
+        }
+
+        .btn-secondary {
+            @apply bg-purple-100 hover:bg-purple-200 text-purple-700 px-6 py-3 rounded-xl font-medium transition-all duration-300 border border-purple-300;
+        }
+
+        .card {
+            @apply bg-white rounded-2xl shadow-xl p-6 border border-purple-100;
+        }
+
+        .input-field {
+            @apply w-full p-4 border-2 border-purple-200 rounded-xl focus:border-purple-500 focus:outline-none transition-colors duration-200;
+        }
+
+        .textarea-field {
+            @apply w-full p-4 border-2 border-purple-200 rounded-xl focus:border-purple-500 focus:outline-none resize-none transitions-colors duration-200;
+        }
+    </style>
+</body>
+</html>

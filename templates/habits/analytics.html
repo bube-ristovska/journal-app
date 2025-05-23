@@ -1,0 +1,328 @@
+{% extends "base.html" %}
+
+{% block title %}Статистики за Навики - МенталноЗдравје{% endblock %}
+
+{% block content %}
+<div class="space-y-8">
+    <!-- Header -->
+    <div class="text-center">
+        <h1 class="text-4xl font-bold text-purple-800 mb-4">📊 Статистики за Навики</h1>
+        <p class="text-purple-600 text-lg">
+            Анализа на твојот прогрес во последните 30 дена
+        </p>
+    </div>
+
+    <!-- Overall Stats -->
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+        {% set total_habits = analytics_data|length %}
+        {% set total_completed = analytics_data.values()|sum(attribute='completed_days') %}
+        {% set total_possible = total_habits * 30 %}
+        {% set avg_completion = (total_completed / total_possible * 100) if total_possible > 0 else 0 %}
+        {% set best_streak = analytics_data.values()|max(attribute='streak') if analytics_data else 0 %}
+
+        <div class="card text-center">
+            <div class="text-3xl mb-2">🎯</div>
+            <h3 class="text-lg font-semibold text-purple-800">Вкупни Навики</h3>
+            <p class="text-2xl font-bold text-purple-600">{{ total_habits }}</p>
+        </div>
+
+        <div class="card text-center">
+            <div class="text-3xl mb-2">✅</div>
+            <h3 class="text-lg font-semibold text-purple-800">Просечен Успех</h3>
+            <p class="text-2xl font-bold text-green-600">{{ "%.1f"|format(avg_completion) }}%</p>
+        </div>
+
+        <div class="card text-center">
+            <div class="text-3xl mb-2">🔥</div>
+            <h3 class="text-lg font-semibold text-purple-800">Најдолг Стрик</h3>
+            <p class="text-2xl font-bold text-orange-600">{{ best_streak.streak if best_streak else 0 }} дена</p>
+        </div>
+
+        <div class="card text-center">
+            <div class="text-3xl mb-2">📈</div>
+            <h3 class="text-lg font-semibold text-purple-800">Вкупно Завршени</h3>
+            <p class="text-2xl font-bold text-blue-600">{{ total_completed }}</p>
+        </div>
+    </div>
+
+    <!-- Completion Rate Chart -->
+    <div class="card">
+        <h2 class="text-2xl font-bold text-purple-800 mb-6">📈 Преглед на Успешност</h2>
+        <div class="relative">
+            <canvas id="completionChart" width="400" height="200"></canvas>
+        </div>
+    </div>
+
+    <!-- Individual Habit Analytics -->
+    <div class="card">
+        <h2 class="text-2xl font-bold text-purple-800 mb-6">🔍 Детални Статистики по Навика</h2>
+
+        <div class="space-y-6">
+            {% for habit_id, data in analytics_data.items() %}
+            <div class="bg-purple-50 border border-purple-200 rounded-xl p-6">
+                <div class="flex items-start justify-between mb-4">
+                    <div class="flex items-center space-x-3">
+                        <span class="text-2xl">{{ data.habit.icon }}</span>
+                        <div>
+                            <h3 class="text-lg font-semibold text-purple-800">{{ data.habit.name }}</h3>
+                            <p class="text-sm text-purple-600">{{ data.habit.category }}</p>
+                        </div>
+                    </div>
+                    <div class="text-right">
+                        <div class="text-2xl font-bold text-purple-600">{{ "%.1f"|format(data.completion_rate) }}%</div>
+                        <div class="text-sm text-purple-500">успешност</div>
+                    </div>
+                </div>
+
+                <!-- Progress Bar -->
+                <div class="mb-4">
+                    <div class="flex justify-between text-sm text-purple-600 mb-1">
+                        <span>{{ data.completed_days }} од {{ data.total_days }} дена</span>
+                        <span>🔥 {{ data.streak }} дена стрик</span>
+                    </div>
+                    <div class="w-full bg-purple-200 rounded-full h-3">
+                        <div class="bg-gradient-to-r from-purple-500 to-purple-600 h-3 rounded-full transition-all duration-500"
+                             style="width: {{ data.completion_rate }}%"></div>
+                    </div>
+                </div>
+
+                <!-- Performance Indicator -->
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center space-x-2">
+                        {% if data.completion_rate >= 80 %}
+                            <span class="px-3 py-1 bg-green-100 text-green-800 rounded-full text-sm font-medium">
+                                🌟 Одлично
+                            </span>
+                        {% elif data.completion_rate >= 60 %}
+                            <span class="px-3 py-1 bg-yellow-100 text-yellow-800 rounded-full text-sm font-medium">
+                                👍 Добро
+                            </span>
+                        {% elif data.completion_rate >= 40 %}
+                            <span class="px-3 py-1 bg-orange-100 text-orange-800 rounded-full text-sm font-medium">
+                                ⚠️ Средно
+                            </span>
+                        {% else %}
+                            <span class="px-3 py-1 bg-red-100 text-red-800 rounded-full text-sm font-medium">
+                                💪 Потреба од подобрување
+                            </span>
+                        {% endif %}
+                    </div>
+
+                    <!-- Streak Indicator -->
+                    {% if data.streak > 0 %}
+                    <div class="flex items-center space-x-1 text-orange-600">
+                        <span class="text-sm font-medium">Активен стрик:</span>
+                        <span class="font-bold">{{ data.streak }}</span>
+                        <span class="text-lg">🔥</span>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <!-- Insights and Recommendations -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div class="card">
+            <h3 class="text-xl font-bold text-purple-800 mb-4">🎉 Твои Успеси</h3>
+            <div class="space-y-3">
+                {% set best_habits = analytics_data.values()|sort(attribute='completion_rate', reverse=true)[:3] %}
+                {% for habit_data in best_habits %}
+                <div class="flex items-center space-x-3 p-3 bg-green-50 border border-green-200 rounded-lg">
+                    <span class="text-xl">{{ habit_data.habit.icon }}</span>
+                    <div class="flex-1">
+                        <p class="font-medium text-green-800">{{ habit_data.habit.name }}</p>
+                        <p class="text-sm text-green-600">{{ "%.1f"|format(habit_data.completion_rate) }}% успешност</p>
+                    </div>
+                    <span class="text-2xl">🏆</span>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+
+        <div class="card">
+            <h3 class="text-xl font-bold text-purple-800 mb-4">💪 Области за Подобрување</h3>
+            <div class="space-y-3">
+                {% set improvement_habits = analytics_data.values()|sort(attribute='completion_rate')[:3] %}
+                {% for habit_data in improvement_habits %}
+                <div class="flex items-center space-x-3 p-3 bg-orange-50 border border-orange-200 rounded-lg">
+                    <span class="text-xl">{{ habit_data.habit.icon }}</span>
+                    <div class="flex-1">
+                        <p class="font-medium text-orange-800">{{ habit_data.habit.name }}</p>
+                        <p class="text-sm text-orange-600">{{ "%.1f"|format(habit_data.completion_rate) }}% успешност</p>
+                    </div>
+                    <span class="text-2xl">📈</span>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+
+    <!-- Action Buttons -->
+    <div class="flex justify-center space-x-4">
+        <a href="{{ url_for('habits.index') }}" class="btn-primary">
+            ✅ Назад кон Навики
+        </a>
+        <button onclick="exportAnalytics()" class="btn-secondary">
+            📊 Извези Статистики
+        </button>
+        <button onclick="printAnalytics()" class="btn-secondary">
+            🖨️ Печати Извештај
+        </button>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    createCompletionChart();
+});
+
+function createCompletionChart() {
+    const ctx = document.getElementById('completionChart').getContext('2d');
+
+    const habits = [
+        {% for habit_id, data in analytics_data.items() %}
+        {
+            name: "{{ data.habit.name }}",
+            completion: {{ data.completion_rate }},
+            completed: {{ data.completed_days }},
+            total: {{ data.total_days }},
+            category: "{{ data.habit.category }}"
+        },
+        {% endfor %}
+    ];
+
+    const categoryColors = {
+        'Физичко здравје': '#ef4444',
+        'Ментално здравје': '#8b5cf6',
+        'Лично развитие': '#06b6d4',
+        'Социјални': '#10b981',
+        'Креативност': '#f59e0b',
+        'Благосостојба': '#84cc16',
+        'Самогрижа': '#ec4899',
+        'Дигитална детоксикација': '#6b7280',
+        'Самореflексија': '#14b8a6',
+        'Доброволство': '#f97316',
+        'Позитивност': '#eab308'
+    };
+
+    new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: habits.map(h => h.name.length > 25 ? h.name.substring(0, 25) + '...' : h.name),
+            datasets: [{
+                label: 'Процент на Успешност',
+                data: habits.map(h => h.completion),
+                backgroundColor: habits.map(h => categoryColors[h.category] || '#a855f7'),
+                borderColor: habits.map(h => categoryColors[h.category] || '#7c3aed'),
+                borderWidth: 2,
+                borderRadius: 8,
+                borderSkipped: false,
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    display: false
+                },
+                tooltip: {
+                    callbacks: {
+                        label: function(context) {
+                            const habit = habits[context.dataIndex];
+                            return [
+                                `Успешност: ${habit.completion.toFixed(1)}%`,
+                                `Завршени: ${habit.completed}/${habit.total} дена`,
+                                `Категорија: ${habit.category}`
+                            ];
+                        }
+                    }
+                }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    max: 100,
+                    ticks: {
+                        callback: function(value) {
+                            return value + '%';
+                        }
+                    },
+                    grid: {
+                        color: '#e5e7eb'
+                    }
+                },
+                x: {
+                    grid: {
+                        display: false
+                    },
+                    ticks: {
+                        maxRotation: 45,
+                        minRotation: 45
+                    }
+                }
+            }
+        }
+    });
+}
+
+function exportAnalytics() {
+    const analyticsData = {
+        exportDate: new Date().toLocaleDateString('mk-MK'),
+        period: 'Последни 30 дена',
+        summary: {
+            totalHabits: {{ analytics_data|length }},
+            averageCompletion: {{ "%.1f"|format(avg_completion) }},
+            bestStreak: {{ best_streak.streak if best_streak else 0 }},
+            totalCompleted: {{ total_completed }}
+        },
+        habits: [
+            {% for habit_id, data in analytics_data.items() %}
+            {
+                name: "{{ data.habit.name }}",
+                category: "{{ data.habit.category }}",
+                completionRate: {{ data.completion_rate }},
+                completedDays: {{ data.completed_days }},
+                totalDays: {{ data.total_days }},
+                currentStreak: {{ data.streak }}
+            },
+            {% endfor %}
+        ]
+    };
+
+    const dataStr = JSON.stringify(analyticsData, null, 2);
+    const dataBlob = new Blob([dataStr], {type: 'application/json'});
+    const url = URL.createObjectURL(dataBlob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = `статистики-навики-${new Date().toISOString().split('T')[0]}.json`;
+    link.click();
+    URL.revokeObjectURL(url);
+
+    showNotification('Статистиките се извезени! 📊', 'success');
+}
+
+function printAnalytics() {
+    window.print();
+}
+</script>
+
+<style>
+@media print {
+    .btn-primary, .btn-secondary, nav, footer {
+        display: none !important;
+    }
+
+    .card {
+        page-break-inside: avoid;
+        margin-bottom: 20px;
+    }
+
+    body {
+        background: white !important;
+    }
+}
+</style>
+{% endblock %}

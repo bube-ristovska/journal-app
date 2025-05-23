@@ -1,0 +1,254 @@
+{% extends "base.html" %}
+
+{% block title %}Следење на Навики - МенталноЗдравје{% endblock %}
+
+{% block content %}
+<div class="space-y-8">
+    <!-- Header -->
+    <div class="text-center">
+        <h1 class="text-4xl font-bold text-purple-800 mb-4">✅ Следење на Навики</h1>
+        <p class="text-purple-600 text-lg">
+            {{ today.strftime('%d.%m.%Y') }} - Следи ги своите дневни навики за подобро здравје
+        </p>
+    </div>
+
+    <!-- Quick Stats -->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div class="card text-center">
+            <div class="text-3xl mb-2">🎯</div>
+            <h3 class="text-lg font-semibold text-purple-800">Денешни Навики</h3>
+            <p class="text-2xl font-bold text-purple-600">{{ habits|length }}</p>
+        </div>
+
+        <div class="card text-center">
+            <div class="text-3xl mb-2">✨</div>
+            <h3 class="text-lg font-semibold text-purple-800">Завршени</h3>
+            <p class="text-2xl font-bold text-green-600" id="completed-count">
+                {{ entries.values()|selectattr('completed')|list|length }}
+            </p>
+        </div>
+
+        <div class="card text-center">
+            <div class="text-3xl mb-2">📈</div>
+            <h3 class="text-lg font-semibold text-purple-800">Прогрес</h3>
+            <p class="text-2xl font-bold text-purple-600" id="progress-percentage">
+                {{ ((entries.values()|selectattr('completed')|list|length / habits|length * 100)|round(1)) if habits|length > 0 else 0 }}%
+            </p>
+        </div>
+    </div>
+
+    <!-- Progress Bar -->
+    <div class="card">
+        <div class="flex items-center justify-between mb-4">
+            <h3 class="text-lg font-semibold text-purple-800">Денешен Прогрес</h3>
+            <span class="text-sm text-purple-600" id="progress-text">
+                {{ entries.values()|selectattr('completed')|list|length }} од {{ habits|length }} завршени
+            </span>
+        </div>
+        <div class="w-full bg-purple-100 rounded-full h-4">
+            <div class="bg-gradient-to-r from-purple-500 to-purple-600 h-4 rounded-full transition-all duration-500"
+                 style="width: {{ ((entries.values()|selectattr('completed')|list|length / habits|length * 100)|round(1)) if habits|length > 0 else 0 }}%"
+                 id="progress-bar"></div>
+        </div>
+    </div>
+
+    <!-- Habits by Category -->
+    {% set categories = habits|groupby('category') %}
+    {% for category, category_habits in categories %}
+    <div class="card">
+        <h2 class="text-2xl font-bold text-purple-800 mb-6 flex items-center">
+            <span class="mr-3">📂</span>
+            {{ category }}
+        </h2>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {% for habit in category_habits %}
+            <div class="habit-card bg-purple-50 border-2 border-purple-200 rounded-xl p-4 transition-all duration-300 hover:shadow-lg"
+                 data-habit-id="{{ habit.id }}">
+                <div class="flex items-start justify-between">
+                    <div class="flex items-start space-x-3 flex-1">
+                        <div class="text-2xl">{{ habit.icon }}</div>
+                        <div class="flex-1">
+                            <h3 class="font-semibold text-purple-800 mb-1">{{ habit.name }}</h3>
+                            <div class="flex items-center space-x-4">
+                                <label class="flex items-center cursor-pointer">
+                                    <input type="checkbox"
+                                           class="habit-checkbox hidden"
+                                           data-habit-id="{{ habit.id }}"
+                                           {% if entries[habit.id] and entries[habit.id].completed %}checked{% endif %}>
+                                    <div class="checkbox-custom"></div>
+                                    <span class="ml-2 text-sm text-purple-600">Завршено</span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Notes section -->
+                <div class="mt-4">
+                    <textarea class="w-full text-sm border border-purple-200 rounded-lg p-2 focus:border-purple-500 focus:outline-none resize-none"
+                              rows="2"
+                              placeholder="Додај белешка..."
+                              data-habit-id="{{ habit.id }}">{% if entries[habit.id] %}{{ entries[habit.id].notes or '' }}{% endif %}</textarea>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endfor %}
+
+    <!-- Action Buttons -->
+    <div class="flex justify-center space-x-4">
+        <a href="{{ url_for('habits.analytics') }}" class="btn-secondary">
+            📊 Погледни Статистики
+        </a>
+        <button onclick="exportProgress()" class="btn-secondary">
+            📥 Извези Прогрес
+        </button>
+    </div>
+</div>
+
+<style>
+.checkbox-custom {
+    width: 20px;
+    height: 20px;
+    border: 2px solid #a855f7;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+}
+
+.habit-checkbox:checked + .checkbox-custom {
+    background-color: #a855f7;
+    border-color: #a855f7;
+}
+
+.habit-checkbox:checked + .checkbox-custom::after {
+    content: '✓';
+    color: white;
+    font-weight: bold;
+    font-size: 14px;
+}
+
+.habit-card.completed {
+    border-color: #10b981;
+    background-color: #f0fdf4;
+}
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Handle habit checkbox changes
+    document.querySelectorAll('.habit-checkbox').forEach(checkbox => {
+        checkbox.addEventListener('change', function() {
+            toggleHabit(this);
+        });
+    });
+
+    // Handle notes changes with debounce
+    document.querySelectorAll('textarea[data-habit-id]').forEach(textarea => {
+        let timeout;
+        textarea.addEventListener('input', function() {
+            clearTimeout(timeout);
+            timeout = setTimeout(() => {
+                const habitId = this.dataset.habitId;
+                const checkbox = document.querySelector(`input[data-habit-id="${habitId}"]`);
+                saveHabitData(habitId, checkbox.checked, this.value);
+            }, 1000);
+        });
+    });
+});
+
+async function toggleHabit(checkbox) {
+    const habitId = checkbox.dataset.habitId;
+    const completed = checkbox.checked;
+    const textarea = document.querySelector(`textarea[data-habit-id="${habitId}"]`);
+    const notes = textarea ? textarea.value : '';
+
+    // Update UI immediately
+    const habitCard = checkbox.closest('.habit-card');
+    if (completed) {
+        habitCard.classList.add('completed');
+    } else {
+        habitCard.classList.remove('completed');
+    }
+
+    const result = await saveHabitData(habitId, completed, notes);
+
+    if (result.success) {
+        updateProgress();
+        showNotification(completed ? 'Навика означена како завршена! 🎉' : 'Навика означена како незавршена', 'success');
+    } else {
+        // Revert UI changes on error
+        checkbox.checked = !completed;
+        if (completed) {
+            habitCard.classList.remove('completed');
+        } else {
+            habitCard.classList.add('completed');
+        }
+        showNotification('Грешка при зачувување: ' + result.message, 'error');
+    }
+}
+
+async function saveHabitData(habitId, completed, notes) {
+    return await apiCall('/habits/toggle', {
+        habit_id: habitId,
+        completed: completed,
+        notes: notes
+    });
+}
+
+function updateProgress() {
+    const checkboxes = document.querySelectorAll('.habit-checkbox');
+    const completedCount = document.querySelectorAll('.habit-checkbox:checked').length;
+    const totalCount = checkboxes.length;
+    const percentage = totalCount > 0 ? Math.round((completedCount / totalCount) * 100) : 0;
+
+    // Update counters
+    document.getElementById('completed-count').textContent = completedCount;
+    document.getElementById('progress-percentage').textContent = percentage + '%';
+    document.getElementById('progress-text').textContent = `${completedCount} од ${totalCount} завршени`;
+
+    // Update progress bar
+    document.getElementById('progress-bar').style.width = percentage + '%';
+}
+
+function exportProgress() {
+    const habitData = [];
+    document.querySelectorAll('.habit-card').forEach(card => {
+        const habitId = card.dataset.habitId;
+        const habitName = card.querySelector('h3').textContent;
+        const completed = card.querySelector('.habit-checkbox').checked;
+        const notes = card.querySelector('textarea').value;
+
+        habitData.push({
+            name: habitName,
+            completed: completed,
+            notes: notes
+        });
+    });
+
+    const exportData = {
+        date: new Date().toLocaleDateString('mk-MK'),
+        habits: habitData,
+        summary: {
+            total: habitData.length,
+            completed: habitData.filter(h => h.completed).length
+        }
+    };
+
+    const dataStr = JSON.stringify(exportData, null, 2);
+    const dataBlob = new Blob([dataStr], {type: 'application/json'});
+    const url = URL.createObjectURL(dataBlob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = `навики-${new Date().toISOString().split('T')[0]}.json`;
+    link.click();
+    URL.revokeObjectURL(url);
+
+    showNotification('Прогресот е извезен! 📥', 'success');
+}
+</script>
+{% endblock %}

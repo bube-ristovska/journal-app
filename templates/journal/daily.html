@@ -1,0 +1,262 @@
+{% extends "base.html" %}
+
+{% block title %}Дневен Запис - МенталноЗдравје{% endblock %}
+
+{% block content %}
+<div class="max-w-4xl mx-auto">
+    <!-- Header -->
+    <div class="text-center mb-8">
+        <div class="text-6xl mb-4">📔</div>
+        <h1 class="text-4xl font-bold text-purple-800 mb-2">Дневен Запис</h1>
+        <p class="text-purple-600 text-lg">{{ entry.date.strftime('%d.%m.%Y') }}</p>
+    </div>
+
+    <!-- Daily Question Card -->
+    <div class="card mb-8 bg-gradient-to-r from-purple-50 to-purple-100 border-purple-200">
+        <div class="flex items-start space-x-4">
+            <div class="text-3xl">💭</div>
+            <div class="flex-1">
+                <h2 class="text-xl font-semibold text-purple-800 mb-3">Прашање на денот</h2>
+                <p class="text-purple-700 text-lg leading-relaxed">{{ entry.question }}</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Journal Form -->
+    <form id="journal-form" class="space-y-6">
+        <!-- Answer to daily question -->
+        <div class="card">
+            <label class="block text-lg font-semibold text-purple-800 mb-3">
+                💬 Твој одговор
+            </label>
+            <textarea
+                name="answer"
+                class="textarea-field h-32"
+                placeholder="Сподели ги твоите мисли..."
+            >{{ entry.answer or '' }}</textarea>
+        </div>
+
+        <!-- Gratitude Section -->
+        <div class="card">
+            <h3 class="text-xl font-semibold text-purple-800 mb-4 flex items-center">
+                🙏 За што си благодарен/на денес?
+            </h3>
+            <div class="space-y-4">
+                <div>
+                    <input
+                        type="text"
+                        name="gratitude_1"
+                        class="input-field"
+                        placeholder="1. Нешто мало што те направи среќен/на"
+                        value="{{ entry.gratitude_1 or '' }}"
+                    >
+                </div>
+                <div>
+                    <input
+                        type="text"
+                        name="gratitude_2"
+                        class="input-field"
+                        placeholder="2. Некој кој ти помогна или те воодушеви"
+                        value="{{ entry.gratitude_2 or '' }}"
+                    >
+                </div>
+                <div>
+                    <input
+                        type="text"
+                        name="gratitude_3"
+                        class="input-field"
+                        placeholder="3. Искуство или момент кој го цениш"
+                        value="{{ entry.gratitude_3 or '' }}"
+                    >
+                </div>
+            </div>
+        </div>
+
+        <!-- Highlight & Challenge -->
+        <div class="grid md:grid-cols-2 gap-6">
+            <div class="card">
+                <label class="block text-lg font-semibold text-purple-800 mb-3">
+                    ⭐ Најдобро од денов
+                </label>
+                <textarea
+                    name="highlight"
+                    class="textarea-field h-24"
+                    placeholder="Што беше најубавото во твојот ден?"
+                >{{ entry.highlight or '' }}</textarea>
+            </div>
+
+            <div class="card">
+                <label class="block text-lg font-semibold text-purple-800 mb-3">
+                    💪 Предизвик кој го совлада
+                </label>
+                <textarea
+                    name="challenge"
+                    class="textarea-field h-24"
+                    placeholder="Како се справи со тешкотиите?"
+                >{{ entry.challenge or '' }}</textarea>
+            </div>
+        </div>
+
+        <!-- Tomorrow Goal -->
+        <div class="card">
+            <label class="block text-lg font-semibold text-purple-800 mb-3">
+                🎯 Цел за утре
+            </label>
+            <input
+                type="text"
+                name="tomorrow_goal"
+                class="input-field"
+                placeholder="Што сакаш да постигнеш утре?"
+                value="{{ entry.tomorrow_goal or '' }}"
+            >
+        </div>
+
+        <!-- Energy & Stress Levels -->
+        <div class="grid md:grid-cols-2 gap-6">
+            <div class="card">
+                <label class="block text-lg font-semibold text-purple-800 mb-4">
+                    ⚡ Ниво на енергија
+                </label>
+                <div class="flex items-center space-x-2">
+                    <span class="text-sm text-purple-600">Ниско</span>
+                    <input
+                        type="range"
+                        name="energy_level"
+                        min="1"
+                        max="10"
+                        value="{{ entry.energy_level or 5 }}"
+                        class="flex-1 h-2 bg-purple-200 rounded-lg appearance-none cursor-pointer"
+                        id="energy-slider"
+                    >
+                    <span class="text-sm text-purple-600">Високо</span>
+                </div>
+                <div class="text-center mt-2">
+                    <span class="text-lg font-semibold text-purple-700" id="energy-value">{{ entry.energy_level or 5 }}</span>
+                </div>
+            </div>
+
+            <div class="card">
+                <label class="block text-lg font-semibold text-purple-800 mb-4">
+                    😰 Ниво на стрес
+                </label>
+                <div class="flex items-center space-x-2">
+                    <span class="text-sm text-purple-600">Ниско</span>
+                    <input
+                        type="range"
+                        name="stress_level"
+                        min="1"
+                        max="10"
+                        value="{{ entry.stress_level or 5 }}"
+                        class="flex-1 h-2 bg-purple-200 rounded-lg appearance-none cursor-pointer"
+                        id="stress-slider"
+                    >
+                    <span class="text-sm text-purple-600">Високо</span>
+                </div>
+                <div class="text-center mt-2">
+                    <span class="text-lg font-semibold text-purple-700" id="stress-value">{{ entry.stress_level or 5 }}</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Save Button -->
+        <div class="text-center pt-6">
+            <button type="submit" class="btn-primary text-lg px-8 py-4">
+                💾 Зачувај запис
+            </button>
+        </div>
+    </form>
+
+    <!-- Quick Actions -->
+    <div class="flex flex-wrap justify-center gap-4 mt-8">
+        <a href="{{ url_for('journal.history') }}" class="btn-secondary">
+            📚 Погледај историја
+        </a>
+        <a href="{{ url_for('journal.prompts') }}" class="btn-secondary">
+            💡 Инспирација за пишување
+        </a>
+        <a href="{{ url_for('mood.index') }}" class="btn-secondary">
+            😊 Зачувај расположение
+        </a>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+    // Update slider values
+    const energySlider = document.getElementById('energy-slider');
+    const energyValue = document.getElementById('energy-value');
+    const stressSlider = document.getElementById('stress-slider');
+    const stressValue = document.getElementById('stress-value');
+
+    energySlider.addEventListener('input', function() {
+        energyValue.textContent = this.value;
+    });
+
+    stressSlider.addEventListener('input', function() {
+        stressValue.textContent = this.value;
+    });
+
+    // Form submission
+    document.getElementById('journal-form').addEventListener('submit', async function(e) {
+        e.preventDefault();
+
+        const formData = new FormData(this);
+        const data = Object.fromEntries(formData.entries());
+
+        const result = await apiCall('{{ url_for("journal.save_entry") }}', data);
+
+        if (result.success) {
+            showNotification(result.message, 'success');
+        } else {
+            showNotification(result.message, 'error');
+        }
+    });
+
+    // Auto-save every 30 seconds
+    setInterval(async function() {
+        const form = document.getElementById('journal-form');
+        const formData = new FormData(form);
+        const data = Object.fromEntries(formData.entries());
+
+        // Check if there's any content to save
+        const hasContent = Object.values(data).some(value => value.trim() !== '');
+
+        if (hasContent) {
+            await apiCall('{{ url_for("journal.save_entry") }}', data);
+        }
+    }, 30000);
+</script>
+
+<style>
+    /* Custom range slider styles */
+    input[type="range"]::-webkit-slider-thumb {
+        appearance: none;
+        height: 20px;
+        width: 20px;
+        border-radius: 50%;
+        background: #9333ea;
+        cursor: pointer;
+        box-shadow: 0 0 2px 0 #555;
+        transition: background .15s ease-in-out;
+    }
+
+    input[type="range"]::-webkit-slider-thumb:hover {
+        background: #7c3aed;
+    }
+
+    input[type="range"]::-moz-range-thumb {
+        height: 20px;
+        width: 20px;
+        border-radius: 50%;
+        background: #9333ea;
+        cursor: pointer;
+        border: none;
+        box-shadow: 0 0 2px 0 #555;
+    }
+
+    input[type="range"]::-moz-range-thumb:hover {
+        background: #7c3aed;
+    }
+</style>
+{% endblock %}

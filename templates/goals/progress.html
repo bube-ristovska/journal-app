@@ -1,0 +1,261 @@
+{% extends "base.html" %}
+
+{% block title %}Цели - МенталноЗдравје{% endblock %}
+
+{% block content %}
+<div class="mb-8">
+    <div class="flex justify-between items-center">
+        <div>
+            <h1 class="text-3xl font-bold text-purple-800 mb-2">🎯 Мои Цели</h1>
+            <p class="text-purple-600">Следи го твојот прогрес и оствари ги твоите соништа</p>
+        </div>
+        <a href="{{ url_for('goals.set_goal') }}" class="btn-primary">
+            ➕ Постави нова цел
+        </a>
+    </div>
+</div>
+
+{% if goals %}
+<div class="space-y-6">
+    {% for goal in goals %}
+    <div class="card hover:shadow-2xl transition-all duration-300">
+        <!-- Goal Header -->
+        <div class="flex justify-between items-start mb-4">
+            <div class="flex-1">
+                <div class="flex items-center space-x-3 mb-2">
+                    <h3 class="text-xl font-bold text-purple-800">{{ goal.title }}</h3>
+                    <span class="px-3 py-1 text-xs font-semibold rounded-full
+                        {% if goal.priority == 'high' %}bg-red-100 text-red-800
+                        {% elif goal.priority == 'medium' %}bg-yellow-100 text-yellow-800
+                        {% else %}bg-green-100 text-green-800{% endif %}">
+                        {% if goal.priority == 'high' %}Висок приоритет
+                        {% elif goal.priority == 'medium' %}Среден приоритет
+                        {% else %}Низок приоритет{% endif %}
+                    </span>
+                </div>
+
+                {% if goal.description %}
+                <p class="text-gray-700 mb-3">{{ goal.description }}</p>
+                {% endif %}
+
+                <div class="flex items-center space-x-4 text-sm text-purple-600">
+                    <span class="bg-purple-100 px-2 py-1 rounded-lg">{{ goal.category }}</span>
+                    {% if goal.target_date %}
+                    <span class="flex items-center space-x-1">
+                        <span>📅</span>
+                        <span>{{ goal.target_date.strftime('%d.%m.%Y') }}</span>
+                    </span>
+                    {% endif %}
+                    {% if goal.target_date %}
+                    {% set days_left = (goal.target_date - today).days %}
+                    <span class="{% if days_left < 0 %}text-red-600{% elif days_left < 7 %}text-orange-600{% else %}text-green-600{% endif %}">
+                        {% if days_left < 0 %}
+                        🔴 Просроченo {{ -days_left }} ден{% if -days_left != 1 %}ови{% endif %}
+                        {% elif days_left == 0 %}
+                        🟡 Денес е крајниот рок!
+                        {% else %}
+                        🟢 Уште {{ days_left }} ден{% if days_left != 1 %}ови{% endif %}
+                        {% endif %}
+                    </span>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Progress Bar -->
+        <div class="mb-4">
+            <div class="flex justify-between items-center mb-2">
+                <span class="text-sm font-medium text-purple-700">Прогрес</span>
+                <span class="text-sm font-bold text-purple-800">{{ goal.progress }}%</span>
+            </div>
+            <div class="w-full bg-purple-200 rounded-full h-3">
+                <div class="bg-gradient-to-r from-purple-500 to-pink-500 h-3 rounded-full transition-all duration-300"
+                     style="width: {{ goal.progress }}%"></div>
+            </div>
+        </div>
+
+        <!-- Manual Progress Update -->
+        <div class="mb-4 flex items-center space-x-3">
+            <label class="text-sm font-medium text-purple-700">Ажурирај прогрес:</label>
+            <input type="range"
+                   class="flex-1 h-2 bg-purple-200 rounded-lg appearance-none cursor-pointer"
+                   min="0" max="100"
+                   value="{{ goal.progress }}"
+                   onchange="updateProgress({{ goal.id }}, this.value)">
+            <span id="progress-display-{{ goal.id }}" class="text-sm font-bold text-purple-800 w-12">{{ goal.progress }}%</span>
+        </div>
+
+        <!-- Milestones -->
+        {% if goal.milestones %}
+        <div class="mb-4">
+            <h4 class="font-semibold text-purple-800 mb-3">🗓️ Мерни камења</h4>
+            <div class="space-y-2">
+                {% for milestone in goal.milestones %}
+                <div class="flex items-center space-x-3 p-3 rounded-lg
+                    {% if milestone.completed %}bg-green-50 border border-green-200
+                    {% else %}bg-gray-50 border border-gray-200{% endif %}">
+
+                    <input type="checkbox"
+                           class="w-5 h-5 text-purple-600 rounded"
+                           {% if milestone.completed %}checked{% endif %}
+                           onchange="toggleMilestone({{ milestone.id }}, this.checked)">
+
+                    <div class="flex-1">
+                        <p class="font-medium {% if milestone.completed %}text-green-800 line-through{% else %}text-gray-800{% endif %}">
+                            {{ milestone.title }}
+                        </p>
+                        {% if milestone.description %}
+                        <p class="text-sm {% if milestone.completed %}text-green-600{% else %}text-gray-600{% endif %}">
+                            {{ milestone.description }}
+                        </p>
+                        {% endif %}
+                        {% if milestone.due_date %}
+                        <p class="text-xs {% if milestone.completed %}text-green-500{% else %}text-gray-500{% endif %}">
+                            📅 {{ milestone.due_date.strftime('%d.%m.%Y') }}
+                        </p>
+                        {% endif %}
+                    </div>
+
+                    {% if milestone.completed %}
+                    <div class="text-green-600">
+                        <span class="text-lg">✅</span>
+                        {% if milestone.completed_date %}
+                        <p class="text-xs">{{ milestone.completed_date.strftime('%d.%m') }}</p>
+                        {% endif %}
+                    </div>
+                    {% endif %}
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        {% endif %}
+
+        <!-- Goal Status -->
+        <div class="flex justify-between items-center pt-4 border-t border-purple-100">
+            <div class="flex items-center space-x-2">
+                {% if goal.progress >= 100 %}
+                <span class="px-3 py-1 bg-green-100 text-green-800 rounded-full text-sm font-medium">
+                    🎉 Завршено!
+                </span>
+                {% elif goal.progress >= 75 %}
+                <span class="px-3 py-1 bg-blue-100 text-blue-800 rounded-full text-sm font-medium">
+                    🚀 Речиси готово
+                </span>
+                {% elif goal.progress >= 50 %}
+                <span class="px-3 py-1 bg-yellow-100 text-yellow-800 rounded-full text-sm font-medium">
+                    ⚡ Во прогрес
+                </span>
+                {% elif goal.progress >= 25 %}
+                <span class="px-3 py-1 bg-orange-100 text-orange-800 rounded-full text-sm font-medium">
+                    🔄 Започнато
+                </span>
+                {% else %}
+                <span class="px-3 py-1 bg-gray-100 text-gray-800 rounded-full text-sm font-medium">
+                    📋 Планирано
+                </span>
+                {% endif %}
+            </div>
+
+            <div class="text-xs text-gray-500">
+                Креирано: {{ goal.created_at.strftime('%d.%m.%Y') }}
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+
+<!-- Goal Statistics -->
+<div class="mt-12 grid md:grid-cols-3 gap-6">
+    <div class="card text-center">
+        <div class="text-4xl mb-3">🎯</div>
+        <h3 class="text-lg font-bold text-purple-800 mb-2">Активни цели</h3>
+        <p class="text-3xl font-bold text-purple-600">{{ goals|length }}</p>
+    </div>
+
+    <div class="card text-center">
+        <div class="text-4xl mb-3">📈</div>
+        <h3 class="text-lg font-bold text-purple-800 mb-2">Просечен прогрес</h3>
+        {% set avg_progress = (goals|sum(attribute='progress') / goals|length) if goals else 0 %}
+        <p class="text-3xl font-bold text-purple-600">{{ "%.0f"|format(avg_progress) }}%</p>
+    </div>
+
+    <div class="card text-center">
+        <div class="text-4xl mb-3">✅</div>
+        <h3 class="text-lg font-bold text-purple-800 mb-2">Завршени цели</h3>
+        {% set completed_goals = goals|selectattr('progress', 'ge', 100)|list|length %}
+        <p class="text-3xl font-bold text-purple-600">{{ completed_goals }}</p>
+    </div>
+</div>
+
+{% else %}
+<!-- Empty State -->
+<div class="card text-center py-16">
+    <div class="text-8xl mb-6">🎯</div>
+    <h2 class="text-2xl font-bold text-purple-800 mb-4">Започни со твоите цели!</h2>
+    <p class="text-purple-600 mb-8 max-w-md mx-auto">
+        Поставувањето цели е првиот чекор кон остварување на твоите соништа.
+        Започни денес и изгради го животот што го сакаш.
+    </p>
+    <a href="{{ url_for('goals.set_goal') }}" class="btn-primary">
+        🚀 Постави твоја прва цел
+    </a>
+</div>
+{% endif %}
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+async function updateProgress(goalId, progress) {
+    document.getElementById(`progress-display-${goalId}`).textContent = progress + '%';
+
+    try {
+        const response = await fetch('/goals/update_progress', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                goal_id: goalId,
+                progress: parseInt(progress)
+            })
+        });
+
+        const result = await response.json();
+        if (result.success) {
+            showNotification('Прогресот е ажуриран!', 'success');
+            if (parseInt(progress) >= 100) {
+                setTimeout(() => {
+                    location.reload();
+                }, 1000);
+            }
+        } else {
+            showNotification('Грешка при ажурирање на прогресот', 'error');
+        }
+    } catch (error) {
+        showNotification('Грешка во комуникацијата', 'error');
+    }
+}
+
+async function toggleMilestone(milestoneId, completed) {
+    try {
+        const response = await fetch('/goals/complete_milestone', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                milestone_id: milestoneId
+            })
+        });
+
+        const result = await response.json();
+        if (result.success) {
+            showNotification('Мерниот камен е ажуриран!', 'success');
+            setTimeout(() => {
+                location.reload();
+            }, 1000);
+        } else {
+            showNotification('Грешка при ажурирање', 'error');
+        }
+    } catch (error) {
+        showNotification('Грешка во комуникацијата', 'error');
+    }
+}
+</script>
+{% endblock %}

@@ -1,0 +1,475 @@
+{% extends "base.html" %}
+
+{% block title %}Следење на Расположение - МенталноЗдравје{% endblock %}
+
+{% block content %}
+<div class="space-y-8">
+    <!-- Header -->
+    <div class="text-center">
+        <h1 class="text-4xl font-bold text-purple-800 mb-4">😊 Следење на Расположение</h1>
+        <p class="text-purple-600 text-lg">
+            Како се чувствуваш денеска? Сподели го твоето расположение и емоции.
+        </p>
+    </div>
+
+    <!-- Current Mood Display -->
+    {% if entry %}
+    <div class="card text-center bg-gradient-to-r from-purple-50 to-purple-100">
+        <div class="text-6xl mb-4">{{ entry.mood_emoji }}</div>
+        <h2 class="text-2xl font-bold text-purple-800 mb-2">{{ entry.mood_name }}</h2>
+        <p class="text-purple-600">Денешното расположение е веќе запишано</p>
+        <button onclick="editMode()" class="btn-secondary mt-4">
+            ✏️ Ажурирај Расположение
+        </button>
+    </div>
+    {% endif %}
+
+    <!-- Mood Selection -->
+    <div class="card" id="mood-form" {% if entry %}style="display: none;"{% endif %}>
+        <h2 class="text-2xl font-bold text-purple-800 mb-6 text-center">
+            Избери го твоето денешно расположение
+        </h2>
+
+        <div class="grid grid-cols-2 md:grid-cols-5 gap-4 mb-8">
+            {% for mood in mood_options %}
+            <div class="mood-option cursor-pointer p-6 rounded-xl border-2 border-gray-200 hover:border-purple-400 transition-all duration-300 text-center"
+                 data-score="{{ mood.score }}"
+                 data-emoji="{{ mood.emoji }}"
+                 data-name="{{ mood.name }}"
+                 data-color="{{ mood.color }}">
+                <div class="text-4xl mb-2">{{ mood.emoji }}</div>
+                <div class="font-semibold text-purple-800">{{ mood.name }}</div>
+            </div>
+            {% endfor %}
+        </div>
+
+        <!-- Additional Metrics -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+            <!-- Anxiety Level -->
+            <div class="space-y-3">
+                <label class="block text-lg font-semibold text-purple-800">
+                    😰 Ниво на Анксиозност
+                </label>
+                <div class="flex items-center space-x-2">
+                    <span class="text-sm text-purple-600">Ниско</span>
+                    <input type="range" id="anxiety-slider" min="1" max="10" value="5"
+                           class="flex-1 h-2 bg-purple-200 rounded-lg appearance-none slider">
+                    <span class="text-sm text-purple-600">Високо</span>
+                </div>
+                <div class="text-center">
+                    <span class="text-2xl font-bold text-purple-600" id="anxiety-value">5</span>
+                    <span class="text-sm text-purple-500">/10</span>
+                </div>
+            </div>
+
+            <!-- Energy Level -->
+            <div class="space-y-3">
+                <label class="block text-lg font-semibold text-purple-800">
+                    ⚡ Ниво на Енергија
+                </label>
+                <div class="flex items-center space-x-2">
+                    <span class="text-sm text-purple-600">Уморен</span>
+                    <input type="range" id="energy-slider" min="1" max="10" value="5"
+                           class="flex-1 h-2 bg-purple-200 rounded-lg appearance-none slider">
+                    <span class="text-sm text-purple-600">Енергичен</span>
+                </div>
+                <div class="text-center">
+                    <span class="text-2xl font-bold text-purple-600" id="energy-value">5</span>
+                    <span class="text-sm text-purple-500">/10</span>
+                </div>
+            </div>
+
+            <!-- Sleep Quality -->
+            <div class="space-y-3">
+                <label class="block text-lg font-semibold text-purple-800">
+                    😴 Квалитет на Сон
+                </label>
+                <div class="flex items-center space-x-2">
+                    <span class="text-sm text-purple-600">Лошо</span>
+                    <input type="range" id="sleep-slider" min="1" max="10" value="5"
+                           class="flex-1 h-2 bg-purple-200 rounded-lg appearance-none slider">
+                    <span class="text-sm text-purple-600">Одлично</span>
+                </div>
+                <div class="text-center">
+                    <span class="text-2xl font-bold text-purple-600" id="sleep-value">5</span>
+                    <span class="text-sm text-purple-500">/10</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Triggers -->
+        <div class="mb-8">
+            <h3 class="text-xl font-bold text-purple-800 mb-4">🔍 Што влијаеше на твоето расположение?</h3>
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
+                {% for trigger in triggers %}
+                <label class="trigger-option cursor-pointer flex items-center space-x-2 p-3 rounded-lg border border-purple-200 hover:bg-purple-50 transition-colors">
+                    <input type="checkbox" class="trigger-checkbox hidden" value="{{ trigger }}">
+                    <div class="checkbox-custom-small"></div>
+                    <span class="text-purple-700">{{ trigger }}</span>
+                </label>
+                {% endfor %}
+            </div>
+        </div>
+
+        <!-- Coping Strategies -->
+        <div class="mb-8">
+            <h3 class="text-xl font-bold text-purple-800 mb-4">💪 Што ти помогна да се чувствуваш подобро?</h3>
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
+                {% for strategy in strategies %}
+                <label class="strategy-option cursor-pointer flex items-center space-x-2 p-3 rounded-lg border border-purple-200 hover:bg-purple-50 transition-colors">
+                    <input type="checkbox" class="strategy-checkbox hidden" value="{{ strategy }}">
+                    <div class="checkbox-custom-small"></div>
+                    <span class="text-purple-700">{{ strategy }}</span>
+                </label>
+                {% endfor %}
+            </div>
+        </div>
+
+        <!-- Notes -->
+        <div class="mb-8">
+            <label class="block text-xl font-bold text-purple-800 mb-4">
+                📝 Дополнителни белешки
+            </label>
+            <textarea id="mood-notes"
+                      class="textarea-field"
+                      rows="4"
+                      placeholder="Опиши го твоето денешно расположение, што се случи, како се чувствуваш..."></textarea>
+        </div>
+
+        <!-- Save Button -->
+        <div class="text-center">
+            <button onclick="saveMood()" class="btn-primary" id="save-btn">
+                💾 Зачувај Расположение
+            </button>
+        </div>
+    </div>
+
+    <!-- Quick Actions -->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div class="card text-center">
+            <div class="text-3xl mb-3">📈</div>
+            <h3 class="text-lg font-semibold text-purple-800 mb-2">Трендови</h3>
+            <p class="text-purple-600 mb-4">Погледни го твојот прогрес</p>
+            <a href="{{ url_for('mood.trends') }}" class="btn-secondary">
+                Погледни Трендови
+            </a>
+        </div>
+
+        <div class="card text-center">
+            <div class="text-3xl mb-3">🧘</div>
+            <h3 class="text-lg font-semibold text-purple-800 mb-2">Релаксација</h3>
+            <p class="text-purple-600 mb-4">Вежби за смирување</p>
+            <button onclick="startBreathingExercise()" class="btn-secondary">
+                Почни Вежба
+            </button>
+        </div>
+
+        <div class="card text-center">
+            <div class="text-3xl mb-3">📞</div>
+            <h3 class="text-lg font-semibold text-purple-800 mb-2">Помош</h3>
+            <p class="text-purple-600 mb-4">Потребна ти е поддршка?</p>
+            <a href="{{ url_for('resources.index') }}" class="btn-secondary">
+                Контакти за Помош
+            </a>
+        </div>
+    </div>
+</div>
+
+<!-- Breathing Exercise Modal -->
+<div id="breathing-modal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50">
+    <div class="bg-white rounded-2xl p-8 max-w-md mx-4 text-center">
+        <h3 class="text-2xl font-bold text-purple-800 mb-4">🧘 Дишни Длабоко</h3>
+        <div class="mb-6">
+            <div id="breathing-circle" class="w-32 h-32 mx-auto rounded-full bg-gradient-to-r from-purple-400 to-purple-600 transition-transform duration-4000"></div>
+        </div>
+        <p id="breathing-instruction" class="text-lg text-purple-700 mb-6">Подготви се...</p>
+        <div class="space-x-4">
+            <button onclick="stopBreathingExercise()" class="btn-secondary">Стоп</button>
+        </div>
+    </div>
+</div>
+
+<style>
+.mood-option {
+    transition: all 0.3s ease;
+}
+
+.mood-option:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(168, 85, 247, 0.3);
+}
+
+.mood-option.selected {
+    border-color: #7c3aed;
+    background: linear-gradient(135deg, #f3e8ff, #e9d5ff);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(168, 85, 247, 0.4);
+}
+
+.slider::-webkit-slider-thumb {
+    appearance: none;
+    height: 20px;
+    width: 20px;
+    border-radius: 50%;
+    background: #7c3aed;
+    cursor: pointer;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+}
+
+.slider::-moz-range-thumb {
+    height: 20px;
+    width: 20px;
+    border-radius: 50%;
+    background: #7c3aed;
+    cursor: pointer;
+    border: none;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+}
+
+.checkbox-custom-small {
+    width: 16px;
+    height: 16px;
+    border: 2px solid #a855f7;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+}
+
+.trigger-checkbox:checked + .checkbox-custom-small,
+.strategy-checkbox:checked + .checkbox-custom-small {
+    background-color: #a855f7;
+    border-color: #a855f7;
+}
+
+.trigger-checkbox:checked + .checkbox-custom-small::after,
+.strategy-checkbox:checked + .checkbox-custom-small::after {
+    content: '✓';
+    color: white;
+    font-weight: bold;
+    font-size: 12px;
+}
+
+.trigger-option input:checked ~ span,
+.strategy-option input:checked ~ span {
+    color: #7c3aed;
+    font-weight: 600;
+}
+
+#breathing-circle.inhale {
+    transform: scale(1.5);
+}
+
+#breathing-circle.exhale {
+    transform: scale(1);
+}
+</style>
+
+<script>
+let selectedMood = null;
+let breathingInterval = null;
+
+document.addEventListener('DOMContentLoaded', function() {
+    // Initialize sliders
+    updateSliderValue('anxiety-slider', 'anxiety-value');
+    updateSliderValue('energy-slider', 'energy-value');
+    updateSliderValue('sleep-slider', 'sleep-value');
+
+    // Load existing data if editing
+    {% if entry %}
+    loadExistingData();
+    {% endif %}
+
+    // Mood selection listeners
+    document.querySelectorAll('.mood-option').forEach(option => {
+        option.addEventListener('click', function() {
+            selectMood(this);
+        });
+    });
+
+    // Slider listeners
+    document.getElementById('anxiety-slider').addEventListener('input', () => updateSliderValue('anxiety-slider', 'anxiety-value'));
+    document.getElementById('energy-slider').addEventListener('input', () => updateSliderValue('energy-slider', 'energy-value'));
+    document.getElementById('sleep-slider').addEventListener('input', () => updateSliderValue('sleep-slider', 'sleep-value'));
+});
+
+function selectMood(element) {
+    // Remove previous selection
+    document.querySelectorAll('.mood-option').forEach(opt => opt.classList.remove('selected'));
+
+    // Add selection to clicked option
+    element.classList.add('selected');
+
+    selectedMood = {
+        score: parseInt(element.dataset.score),
+        emoji: element.dataset.emoji,
+        name: element.dataset.name,
+        color: element.dataset.color
+    };
+}
+
+function updateSliderValue(sliderId, valueId) {
+    const slider = document.getElementById(sliderId);
+    const valueSpan = document.getElementById(valueId);
+    valueSpan.textContent = slider.value;
+}
+
+function editMode() {
+    document.getElementById('mood-form').style.display = 'block';
+}
+
+{% if entry %}
+function loadExistingData() {
+    // Set mood selection
+    const moodOptions = document.querySelectorAll('.mood-option');
+    moodOptions.forEach(option => {
+        if (parseInt(option.dataset.score) === {{ entry.mood_score }}) {
+            selectMood(option);
+        }
+    });
+
+    // Set sliders
+    {% if entry.anxiety_level %}
+    document.getElementById('anxiety-slider').value = {{ entry.anxiety_level }};
+    updateSliderValue('anxiety-slider', 'anxiety-value');
+    {% endif %}
+
+    {% if entry.energy_level %}
+    document.getElementById('energy-slider').value = {{ entry.energy_level }};
+    updateSliderValue('energy-slider', 'energy-value');
+    {% endif %}
+
+    {% if entry.sleep_quality %}
+    document.getElementById('sleep-slider').value = {{ entry.sleep_quality }};
+    updateSliderValue('sleep-slider', 'sleep-value');
+    {% endif %}
+
+    // Set triggers
+    {% if entry.triggers %}
+    const triggers = {{ entry.triggers|safe }};
+    triggers.forEach(trigger => {
+        const checkbox = document.querySelector(`input[value="${trigger}"]`);
+        if (checkbox) checkbox.checked = true;
+    });
+    {% endif %}
+
+    // Set coping strategies
+    {% if entry.coping_strategies %}
+    const strategies = {{ entry.coping_strategies|safe }};
+    strategies.forEach(strategy => {
+        const checkbox = document.querySelector(`input[value="${strategy}"]`);
+        if (checkbox) checkbox.checked = true;
+    });
+    {% endif %}
+
+    // Set notes
+    {% if entry.notes %}
+    document.getElementById('mood-notes').value = `{{ entry.notes }}`;
+    {% endif %}
+}
+{% endif %}
+
+async function saveMood() {
+    if (!selectedMood) {
+        showNotification('Ве молиме изберете расположение', 'warning');
+        return;
+    }
+
+    const saveBtn = document.getElementById('save-btn');
+    saveBtn.disabled = true;
+    saveBtn.textContent = 'Се зачувува...';
+
+    const triggers = Array.from(document.querySelectorAll('.trigger-checkbox:checked')).map(cb => cb.value);
+    const strategies = Array.from(document.querySelectorAll('.strategy-checkbox:checked')).map(cb => cb.value);
+
+    const data = {
+        mood_score: selectedMood.score,
+        mood_emoji: selectedMood.emoji,
+        mood_name: selectedMood.name,
+        anxiety_level: parseInt(document.getElementById('anxiety-slider').value),
+        energy_level: parseInt(document.getElementById('energy-slider').value),
+        sleep_quality: parseInt(document.getElementById('sleep-slider').value),
+        notes: document.getElementById('mood-notes').value,
+        triggers: triggers,
+        coping_strategies: strategies
+    };
+
+    const result = await apiCall('/mood/save', data);
+
+    if (result.success) {
+        showNotification(result.message, 'success');
+        setTimeout(() => {
+            location.reload();
+        }, 1500);
+    } else {
+        showNotification('Грешка: ' + result.message, 'error');
+        saveBtn.disabled = false;
+        saveBtn.textContent = '💾 Зачувај Расположение';
+    }
+}
+
+function startBreathingExercise() {
+    document.getElementById('breathing-modal').classList.remove('hidden');
+    document.getElementById('breathing-modal').classList.add('flex');
+
+    const circle = document.getElementById('breathing-circle');
+    const instruction = document.getElementById('breathing-instruction');
+
+    let phase = 'inhale';
+    let count = 0;
+
+    function breathingCycle() {
+        if (phase === 'inhale') {
+            instruction.textContent = 'Вдиши... (4 секунди)';
+            circle.classList.add('inhale');
+            circle.classList.remove('exhale');
+
+            setTimeout(() => {
+                phase = 'hold1';
+                instruction.textContent = 'Задржи... (4 секунди)';
+            }, 4000);
+
+            setTimeout(() => {
+                phase = 'exhale';
+                instruction.textContent = 'Издиши... (4 секунди)';
+                circle.classList.remove('inhale');
+                circle.classList.add('exhale');
+            }, 8000);
+
+            setTimeout(() => {
+                phase = 'hold2';
+                instruction.textContent = 'Задржи... (4 секунди)';
+            }, 12000);
+
+            setTimeout(() => {
+                phase = 'inhale';
+                count++;
+                if (count < 5) {
+                    breathingCycle();
+                } else {
+                    instruction.textContent = 'Одлично! Завршивте со вежбата. 🌟';
+                    setTimeout(() => {
+                        stopBreathingExercise();
+                    }, 2000);
+                }
+            }, 16000);
+        }
+    }
+
+    setTimeout(breathingCycle, 1000);
+}
+
+function stopBreathingExercise() {
+    document.getElementById('breathing-modal').classList.add('hidden');
+    document.getElementById('breathing-modal').classList.remove('flex');
+
+    if (breathingInterval) {
+        clearInterval(breathingInterval);
+        breathingInterval = null;
+    }
+
+    showNotification('Одлично! Се надеваме дека се чувствувате подобро. 🧘', 'success');
+}
+</script>
+{% endblock %}

@@ -1,0 +1,204 @@
+{% extends "base.html" %}
+
+{% block title %}Трендови на Расположение - МенталноЗдравје{% endblock %}
+
+{% block content %}
+<div class="space-y-8">
+    <!-- Header -->
+    <div class="text-center">
+        <h1 class="text-4xl font-bold text-purple-800 mb-4">📈 Трендови на Расположение</h1>
+        <p class="text-purple-600 text-lg">
+            Анализа на твоето расположение во последните 30 дена
+        </p>
+    </div>
+
+    <!-- Summary Stats -->
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+        <div class="card text-center">
+            <div class="text-3xl mb-2">📊</div>
+            <h3 class="text-lg font-semibold text-purple-800">Записи</h3>
+            <p class="text-2xl font-bold text-purple-600" id="total-entries">{{ mood_data|length }}</p>
+            <p class="text-sm text-purple-500">последни 30 дена</p>
+        </div>
+
+        <div class="card text-center">
+            <div class="text-3xl mb-2">😊</div>
+            <h3 class="text-lg font-semibold text-purple-800">Просечно</h3>
+            <p class="text-2xl font-bold text-green-600" id="average-mood">
+                {% if mood_data %}
+                {{ "%.1f"|format(mood_data|sum(attribute='score')/mood_data|length) }}
+                {% else %}
+                0.0
+                {% endif %}
+            </p>
+            <p class="text-sm text-purple-500">од 5.0</p>
+        </div>
+
+        <div class="card text-center">
+            <div class="text-3xl mb-2">📅</div>
+            <h3 class="text-lg font-semibold text-purple-800">Најдобар Ден</h3>
+            <p class="text-xl font-bold text-green-600" id="best-day">
+                {% if mood_data %}
+                {% set best = mood_data|max(attribute='score') %}
+                {{ best.emoji }} {{ best.score }}
+                {% else %}
+                -
+                {% endif %}
+            </p>
+            <p class="text-sm text-purple-500" id="best-date">
+                {% if mood_data %}
+                {{ (mood_data|max(attribute='score')).date }}
+                {% endif %}
+            </p>
+        </div>
+
+        <div class="card text-center">
+            <div class="text-3xl mb-2">📉</div>
+            <h3 class="text-lg font-semibold text-purple-800">Најтежок Ден</h3>
+            <p class="text-xl font-bold text-orange-600" id="worst-day">
+                {% if mood_data %}
+                {% set worst = mood_data|min(attribute='score') %}
+                {{ worst.emoji }} {{ worst.score }}
+                {% else %}
+                -
+                {% endif %}
+            </p>
+            <p class="text-sm text-purple-500" id="worst-date">
+                {% if mood_data %}
+                {{ (mood_data|min(attribute='score')).date }}
+                {% endif %}
+            </p>
+        </div>
+    </div>
+
+    <!-- Main Mood Chart -->
+    <div class="card">
+        <div class="flex justify-between items-center mb-6">
+            <h2 class="text-2xl font-bold text-purple-800">📈 Преглед на Расположение</h2>
+            <div class="flex space-x-2">
+                <button onclick="changeChartView('line')" class="btn-secondary active" id="line-btn">Линија</button>
+                <button onclick="changeChartView('bar')" class="btn-secondary" id="bar-btn">Столбци</button>
+            </div>
+        </div>
+        <div class="relative h-96">
+            <canvas id="moodChart"></canvas>
+        </div>
+    </div>
+
+    <!-- Secondary Metrics -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <!-- Anxiety Trends -->
+        {% if anxiety_data %}
+        <div class="card">
+            <h3 class="text-xl font-bold text-purple-800 mb-4">😰 Трендови на Анксиозност</h3>
+            <div class="relative h-64">
+                <canvas id="anxietyChart"></canvas>
+            </div>
+        </div>
+        {% endif %}
+
+        <!-- Energy Trends -->
+        {% if energy_data %}
+        <div class="card">
+            <h3 class="text-xl font-bold text-purple-800 mb-4">⚡ Трендови на Енергија</h3>
+            <div class="relative h-64">
+                <canvas id="energyChart"></canvas>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+
+    <!-- Mood Distribution -->
+    <div class="card">
+        <h2 class="text-2xl font-bold text-purple-800 mb-6">🎯 Дистрибуција на Расположение</h2>
+        <div class="grid grid-cols-2 md:grid-cols-5 gap-4">
+            {% set mood_counts = {} %}
+            {% for entry in mood_data %}
+            {% if entry.score not in mood_counts %}
+            {% set _ = mood_counts.update({entry.score: 0}) %}
+            {% endif %}
+            {% set _ = mood_counts.update({entry.score: mood_counts[entry.score] + 1}) %}
+            {% endfor %}
+
+            {% for score in range(1, 6) %}
+            <div class="text-center p-4 bg-purple-50 rounded-xl border border-purple-200">
+                <div class="text-3xl mb-2">
+                    {% if score == 1 %}😢
+                    {% elif score == 2 %}😕
+                    {% elif score == 3 %}😐
+                    {% elif score == 4 %}😊
+                    {% else %}😄
+                    {% endif %}
+                </div>
+                <div class="text-2xl font-bold text-purple-800">{{ mood_counts.get(score, 0) }}</div>
+                <div class="text-sm text-purple-600">
+                    {% if mood_data|length > 0 %}
+                    {{ "%.1f"|format((mood_counts.get(score, 0) / mood_data|length) * 100) }}%
+                    {% else %}
+                    0%
+                    {% endif %}
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <!-- Weekly Pattern -->
+    <div class="card">
+        <h2 class="text-2xl font-bold text-purple-800 mb-6">📅 Седмичен Образец</h2>
+        <div class="relative h-64">
+            <canvas id="weeklyChart"></canvas>
+        </div>
+    </div>
+
+    <!-- Insights -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div class="card">
+            <h3 class="text-xl font-bold text-purple-800 mb-4">🌟 Позитивни Инсајти</h3>
+            <div class="space-y-3" id="positive-insights">
+                {% if mood_data %}
+                {% set good_days = mood_data|selectattr('score', 'ge', 4)|list %}
+                {% if good_days %}
+                <div class="flex items-center space-x-3 p-3 bg-green-50 border border-green-200 rounded-lg">
+                    <span class="text-2xl">🎉</span>
+                    <div>
+                        <p class="font-medium text-green-800">Одлични денови</p>
+                        <p class="text-sm text-green-600">{{ good_days|length }} од {{ mood_data|length }} дена</p>
+                    </div>
+                </div>
+                {% endif %}
+
+                {% set recent_trend = mood_data[-7:] if mood_data|length >= 7 else mood_data %}
+                {% if recent_trend %}
+                {% set recent_avg = recent_trend|sum(attribute='score')/recent_trend|length %}
+                {% set overall_avg = mood_data|sum(attribute='score')/mood_data|length %}
+                {% if recent_avg > overall_avg %}
+                <div class="flex items-center space-x-3 p-3 bg-blue-50 border border-blue-200 rounded-lg">
+                    <span class="text-2xl">📈</span>
+                    <div>
+                        <p class="font-medium text-blue-800">Подобрување</p>
+                        <p class="text-sm text-blue-600">Последниве денови се подобри</p>
+                    </div>
+                </div>
+                {% endif %}
+                {% endif %}
+                {% endif %}
+            </div>
+        </div>
+
+        <div class="card">
+            <h3 class="text-xl font-bold text-purple-800 mb-4">💡 Препораки</h3>
+            <div class="space-y-3" id="recommendations">
+                {% if mood_data %}
+                {% set low_days = mood_data|selectattr('score', 'le', 2)|list %}
+                {% if low_days|length > 3 %}
+                <div class="flex items-center space-x-3 p-3 bg-yellow-50 border border-yellow-200 rounded-lg">
+                    <span class="text-2xl">🤗</span>
+                    <div>
+                        <p class="font-medium text-yellow-800">Потребна е грижа</p>
+                        <p class="text-sm text-yellow-600">Разгледај техники за справување</p></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

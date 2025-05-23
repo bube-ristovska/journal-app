@@ -1,0 +1,208 @@
+<!-- resources/index.html -->
+{% extends "base.html" %}
+
+{% block title %}Ресурси - МенталноЗдравје{% endblock %}
+
+{% block content %}
+<div class="space-y-8">
+    <!-- Hero Section -->
+    <div class="text-center mb-12">
+        <div class="inline-flex items-center justify-center w-20 h-20 bg-purple-100 rounded-full mb-6">
+            <span class="text-4xl">📚</span>
+        </div>
+        <h1 class="text-4xl font-bold text-purple-800 mb-4">Ресурси за ментално здравје</h1>
+        <p class="text-xl text-purple-600 max-w-2xl mx-auto">
+            Пронајди корисни ресурси, информации и поддршка за твоето ментално здравје
+        </p>
+    </div>
+
+    <!-- Resource Categories Grid -->
+    <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <!-- Crisis Resources -->
+        <div class="card group hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2">
+            <div class="text-center mb-6">
+                <div class="inline-flex items-center justify-center w-16 h-16 bg-red-100 rounded-full mb-4 group-hover:bg-red-200 transition-colors duration-300">
+                    <span class="text-3xl">🆘</span>
+                </div>
+                <h3 class="text-2xl font-bold text-gray-800 mb-2">Кризни ресурси</h3>
+                <p class="text-gray-600 mb-6">
+                    Итна помош и поддршка во кризни ситуации
+                </p>
+            </div>
+
+            <div class="space-y-4 mb-6">
+                <div class="flex items-center space-x-3 text-sm text-gray-600">
+                    <span class="w-2 h-2 bg-red-400 rounded-full"></span>
+                    <span>24/7 достапност</span>
+                </div>
+                <div class="flex items-center space-x-3 text-sm text-gray-600">
+                    <span class="w-2 h-2 bg-red-400 rounded-full"></span>
+                    <span>Професионална помош</span>
+                </div>
+                <div class="flex items-center space-x-3 text-sm text-gray-600">
+                    <span class="w-2 h-2 bg-red-400 rounded-full"></span>
+                    <span>Анонимно и бесплатно</span>
+                </div>
+            </div>
+
+            <a href="{{ url_for('resources.crisis') }}" class="btn-primary w-full text-center block">
+                Пристапи кон ресурси
+            </a>
+        </div>
+
+        <!-- Educational Content -->
+        <div class="card group hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2">
+            <div class="text-center mb-6">
+                <div class="inline-flex items-center justify-center w-16 h-16 bg-blue-100 rounded-full mb-4 group-hover:bg-blue-200 transition-colors duration-300">
+                    <span class="text-3xl">📖</span>
+                </div>
+                <h3 class="text-2xl font-bold text-gray-800 mb-2">Образовни содржини</h3>
+                <p class="text-gray-600 mb-6">
+                    Научи повеќе за менталното здравје и техники за справување
+                </p>
+            </div>
+
+            <div class="space-y-4 mb-6">
+                <div class="flex items-center space-x-3 text-sm text-gray-600">
+                    <span class="w-2 h-2 bg-blue-400 rounded-full"></span>
+                    <span>Стручни статии</span>
+                </div>
+                <div class="flex items-center space-x-3 text-sm text-gray-600">
+                    <span class="w-2 h-2 bg-blue-400 rounded-full"></span>
+                    <span>Практични совети</span>
+                </div>
+                <div class="flex items-center space-x-3 text-sm text-gray-600">
+                    <span class="w-2 h-2 bg-blue-400 rounded-full"></span>
+                    <span>Лесно разбирливо</span>
+                </div>
+            </div>
+
+            <a href="{{ url_for('resources.education') }}" class="btn-primary w-full text-center block">
+                Прочитај повеќе
+            </a>
+        </div>
+
+        <!-- Quick Help -->
+        <div class="card group hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2">
+            <div class="text-center mb-6">
+                <div class="inline-flex items-center justify-center w-16 h-16 bg-green-100 rounded-full mb-4 group-hover:bg-green-200 transition-colors duration-300">
+                    <span class="text-3xl">💡</span>
+                </div>
+                <h3 class="text-2xl font-bold text-gray-800 mb-2">Брза помош</h3>
+                <p class="text-gray-600 mb-6">
+                    Техники за брзо смирување и справување со стрес
+                </p>
+            </div>
+
+            <div class="space-y-4 mb-6">
+                <div class="flex items-center space-x-3 text-sm text-gray-600">
+                    <span class="w-2 h-2 bg-green-400 rounded-full"></span>
+                    <span>Техники за дишење</span>
+                </div>
+                <div class="flex items-center space-x-3 text-sm text-gray-600">
+                    <span class="w-2 h-2 bg-green-400 rounded-full"></span>
+                    <span>Вежби за релаксација</span>
+                </div>
+                <div class="flex items-center space-x-3 text-sm text-gray-600">
+                    <span class="w-2 h-2 bg-green-400 rounded-full"></span>
+                    <span>Копинг стратегии</span>
+                </div>
+            </div>
+
+            <button onclick="showQuickHelp()" class="btn-primary w-full">
+                Покажи техники
+            </button>
+        </div>
+    </div>
+
+    <!-- Important Notice -->
+    <div class="bg-yellow-50 border-l-4 border-yellow-400 p-6 rounded-lg">
+        <div class="flex items-start">
+            <div class="flex-shrink-0">
+                <span class="text-2xl">⚠️</span>
+            </div>
+            <div class="ml-3">
+                <h3 class="text-lg font-semibold text-yellow-800 mb-2">Важно известување</h3>
+                <p class="text-yellow-700 mb-4">
+                    Ако се чувствуваш во непосредна опасност или имаš мисли за самоповредување,
+                    веднаш контактирај итни служби или кризна линија.
+                </p>
+                <div class="flex flex-wrap gap-4">
+                    <a href="tel:194" class="inline-flex items-center text-yellow-800 hover:text-yellow-900 font-semibold">
+                        📞 Итна помош: 194
+                    </a>
+                    <a href="tel:023061661" class="inline-flex items-center text-yellow-800 hover:text-yellow-900 font-semibold">
+                        📞 Кризна линија: 02 3061-661
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Quick Help Modal -->
+<div id="quickHelpModal" class="fixed inset-0 bg-black bg-opacity-50 hidden z-50 flex items-center justify-center p-4">
+    <div class="bg-white rounded-2xl max-w-md w-full max-h-[80vh] overflow-y-auto">
+        <div class="p-6">
+            <div class="flex justify-between items-center mb-6">
+                <h3 class="text-2xl font-bold text-purple-800">Брза помош</h3>
+                <button onclick="closeQuickHelp()" class="text-gray-500 hover:text-gray-700">
+                    <span class="text-2xl">&times;</span>
+                </button>
+            </div>
+
+            <div class="space-y-6">
+                <div class="bg-blue-50 p-4 rounded-lg">
+                    <h4 class="font-semibold text-blue-800 mb-2">🫁 Техника за дишење 4-7-8</h4>
+                    <ol class="text-sm text-blue-700 space-y-1">
+                        <li>1. Вдиши 4 секунди</li>
+                        <li>2. Задржи 7 секунди</li>
+                        <li>3. Издиши 8 секунди</li>
+                        <li>4. Повтори 4 пати</li>
+                    </ol>
+                </div>
+
+                <div class="bg-green-50 p-4 rounded-lg">
+                    <h4 class="font-semibold text-green-800 mb-2">🌟 Техника 5-4-3-2-1</h4>
+                    <ul class="text-sm text-green-700 space-y-1">
+                        <li>• 5 работи што ги гледаш</li>
+                        <li>• 4 работи што ги допираш</li>
+                        <li>• 3 работи што ги слушаш</li>
+                        <li>• 2 работи што ги мирисаш</li>
+                        <li>• 1 работа што ја вкусуваш</li>
+                    </ul>
+                </div>
+
+                <div class="bg-purple-50 p-4 rounded-lg">
+                    <h4 class="font-semibold text-purple-800 mb-2">💭 Позитивни афирмации</h4>
+                    <ul class="text-sm text-purple-700 space-y-1">
+                        <li>• "Ова ќе помине"</li>
+                        <li>• "Јас сум силен/на"</li>
+                        <li>• "Безбеден/на сум"</li>
+                        <li>• "Можам да се справам"</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+function showQuickHelp() {
+    document.getElementById('quickHelpModal').classList.remove('hidden');
+}
+
+function closeQuickHelp() {
+    document.getElementById('quickHelpModal').classList.add('hidden');
+}
+
+// Close modal when clicking outside
+document.getElementById('quickHelpModal').addEventListener('click', function(e) {
+    if (e.target === this) {
+        closeQuickHelp();
+    }
+});
+</script>
+{% endblock %}

@@ -1,0 +1,345 @@
+<!-- resources/crisis.html -->
+{% extends "base.html" %}
+
+{% block title %}Кризни ресурси - МенталноЗдравје{% endblock %}
+
+{% block content %}
+<div class="space-y-8">
+    <!-- Header -->
+    <div class="text-center mb-12">
+        <div class="inline-flex items-center justify-center w-20 h-20 bg-red-100 rounded-full mb-6">
+            <span class="text-4xl">🆘</span>
+        </div>
+        <h1 class="text-4xl font-bold text-red-700 mb-4">Кризни ресурси</h1>
+        <p class="text-xl text-gray-600 max-w-2xl mx-auto">
+            Итна помош и поддршка достапна 24/7
+        </p>
+    </div>
+
+    <!-- Emergency Alert -->
+    <div class="bg-red-50 border-l-4 border-red-500 p-6 rounded-lg mb-8">
+        <div class="flex items-start">
+            <div class="flex-shrink-0">
+                <span class="text-3xl">🚨</span>
+            </div>
+            <div class="ml-4">
+                <h3 class="text-lg font-bold text-red-800 mb-2">Итна ситуација?</h3>
+                <p class="text-red-700 mb-4">
+                    Ако си во непосредна опасност, веднаш повикај итни служби или оди во најблиската болница.
+                </p>
+                <div class="flex flex-wrap gap-4">
+                    <a href="tel:194" class="inline-flex items-center bg-red-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-red-700 transition-colors">
+                        📞 Итна помош: 194
+                    </a>
+                    <a href="tel:192" class="inline-flex items-center bg-red-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-red-700 transition-colors">
+                        🚑 Брза помош: 192
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Crisis Hotlines -->
+    {% if emergency_resources %}
+    <div class="mb-12">
+        <h2 class="text-2xl font-bold text-gray-800 mb-6 flex items-center">
+            <span class="text-2xl mr-3">📞</span>
+            Кризни линии
+        </h2>
+
+        <div class="grid gap-6">
+            {% for resource in emergency_resources %}
+            <div class="card border-l-4 border-red-400">
+                <div class="flex flex-col md:flex-row md:items-center justify-between">
+                    <div class="flex-1">
+                        <h3 class="text-xl font-bold text-gray-800 mb-2">{{ resource.name }}</h3>
+                        <p class="text-gray-600 mb-4">{{ resource.description }}</p>
+
+                        {% if resource.instructions %}
+                        <div class="bg-blue-50 p-4 rounded-lg mb-4">
+                            <h4 class="font-semibold text-blue-800 mb-2">Како да повикаш:</h4>
+                            <p class="text-blue-700 text-sm">{{ resource.instructions }}</p>
+                        </div>
+                        {% endif %}
+
+                        {% if resource.benefits %}
+                        <div class="text-sm text-gray-600">
+                            <strong>Што можеш да очекуваš:</strong> {{ resource.benefits }}
+                        </div>
+                        {% endif %}
+                    </div>
+
+                    <div class="mt-4 md:mt-0 md:ml-6">
+                        <a href="tel:{{ resource.phone }}" class="bg-red-600 text-white px-8 py-4 rounded-xl font-bold text-lg hover:bg-red-700 transition-all transform hover:scale-105 shadow-lg block text-center">
+                            📞 {{ resource.phone }}
+                        </a>
+                        <p class="text-xs text-gray-500 text-center mt-2">Кликни за повик</p>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- Local Resources -->
+    {% if resources %}
+    <div class="mb-12">
+        <h2 class="text-2xl font-bold text-gray-800 mb-6 flex items-center">
+            <span class="text-2xl mr-3">🏥</span>
+            Локални ресурси за Македонија
+        </h2>
+
+        <div class="grid md:grid-cols-2 gap-6">
+            {% for resource in resources %}
+            <div class="card hover:shadow-xl transition-all duration-300">
+                <div class="mb-4">
+                    <h3 class="text-xl font-bold text-purple-800 mb-2">{{ resource.name }}</h3>
+                    {% if resource.phone %}
+                    <a href="tel:{{ resource.phone }}" class="inline-flex items-center text-purple-600 hover:text-purple-800 font-semibold mb-3">
+                        📞 {{ resource.phone }}
+                    </a>
+                    {% endif %}
+                </div>
+
+                {% if resource.description %}
+                <p class="text-gray-600 mb-4">{{ resource.description }}</p>
+                {% endif %}
+
+                {% if resource.instructions %}
+                <div class="bg-purple-50 p-4 rounded-lg mb-4">
+                    <h4 class="font-semibold text-purple-800 mb-2">Инструкции:</h4>
+                    <p class="text-purple-700 text-sm">{{ resource.instructions }}</p>
+                </div>
+                {% endif %}
+
+                {% if resource.benefits %}
+                <div class="bg-green-50 p-4 rounded-lg">
+                    <h4 class="font-semibold text-green-800 mb-2">Бенефити:</h4>
+                    <p class="text-green-700 text-sm">{{ resource.benefits }}</p>
+                </div>
+                {% endif %}
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- Self-Help Tools -->
+    <div class="mb-12">
+        <h2 class="text-2xl font-bold text-gray-800 mb-6 flex items-center">
+            <span class="text-2xl mr-3">🛠️</span>
+            Алатки за самопомош
+        </h2>
+
+        <div class="grid md:grid-cols-3 gap-6">
+            <div class="card text-center hover:shadow-xl transition-all duration-300">
+                <div class="text-4xl mb-4">🫁</div>
+                <h3 class="text-lg font-bold text-gray-800 mb-2">Дишење за смирување</h3>
+                <p class="text-gray-600 mb-4 text-sm">Брзи техники за намалување на анксиозност</p>
+                <button onclick="startBreathingExercise()" class="btn-primary w-full">
+                    Започни вежба
+                </button>
+            </div>
+
+            <div class="card text-center hover:shadow-xl transition-all duration-300">
+                <div class="text-4xl mb-4">🧘‍♀️</div>
+                <h3 class="text-lg font-bold text-gray-800 mb-2">Медитација</h3>
+                <p class="text-gray-600 mb-4 text-sm">Водена медитација за релаксација</p>
+                <button onclick="startMeditation()" class="btn-primary w-full">
+                    Слушај водење
+                </button>
+            </div>
+
+            <div class="card text-center hover:shadow-xl transition-all duration-300">
+                <div class="text-4xl mb-4">📝</div>
+                <h3 class="text-lg font-bold text-gray-800 mb-2">Кризен план</h3>
+                <p class="text-gray-600 mb-4 text-sm">Создај план за итни ситуации</p>
+                <button onclick="createCrisisPlan()" class="btn-primary w-full">
+                    Создај план
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Safety Tips -->
+    <div class="bg-blue-50 rounded-2xl p-8">
+        <h2 class="text-2xl font-bold text-blue-800 mb-6 flex items-center">
+            <span class="text-2xl mr-3">💡</span>
+            Совети за безбедност
+        </h2>
+
+        <div class="grid md:grid-cols-2 gap-6">
+            <div>
+                <h3 class="font-bold text-blue-700 mb-3">Препознај знаците на предупредување:</h3>
+                <ul class="space-y-2 text-blue-600">
+                    <li class="flex items-start">
+                        <span class="text-blue-400 mr-2">•</span>
+                        <span>Мисли за самоповредување</span>
+                    </li>
+                    <li class="flex items-start">
+                        <span class="text-blue-400 mr-2">•</span>
+                        <span>Чувство на безнадежност</span>
+                    </li>
+                    <li class="flex items-start">
+                        <span class="text-blue-400 mr-2">•</span>
+                        <span>Изолација од другите</span>
+                    </li>
+                    <li class="flex items-start">
+                        <span class="text-blue-400 mr-2">•</span>
+                        <span>Крајни промени во расположението</span>
+                    </li>
+                </ul>
+            </div>
+
+            <div>
+                <h3 class="font-bold text-blue-700 mb-3">Што да направиš:</h3>
+                <ul class="space-y-2 text-blue-600">
+                    <li class="flex items-start">
+                        <span class="text-blue-400 mr-2">•</span>
+                        <span>Зборувај со доверлив човек</span>
+                    </li>
+                    <li class="flex items-start">
+                        <span class="text-blue-400 mr-2">•</span>
+                        <span>Повикај кризна линија</span>
+                    </li>
+                    <li class="flex items-start">
+                        <span class="text-blue-400 mr-2">•</span>
+                        <span>Оди кај лекар или психолог</span>
+                    </li>
+                    <li class="flex items-start">
+                        <span class="text-blue-400 mr-2">•</span>
+                        <span>Остани со некого</span>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Breathing Exercise Modal -->
+<div id="breathingModal" class="fixed inset-0 bg-black bg-opacity-50 hidden z-50 flex items-center justify-center p-4">
+    <div class="bg-white rounded-2xl max-w-md w-full p-8 text-center">
+        <h3 class="text-2xl font-bold text-purple-800 mb-6">Вежба за дишење</h3>
+
+        <div id="breathingCircle" class="w-32 h-32 mx-auto mb-6 bg-purple-200 rounded-full flex items-center justify-center text-2xl font-bold text-purple-800 transition-all duration-1000">
+            4
+        </div>
+
+        <div id="breathingInstruction" class="text-lg text-gray-700 mb-6">
+            Подготви се...
+        </div>
+
+        <div class="flex gap-4">
+            <button onclick="startBreathing()" id="startBreathingBtn" class="btn-primary flex-1">
+                Започни
+            </button>
+            <button onclick="stopBreathing()" class="btn-secondary flex-1">
+                Стопирај
+            </button>
+        </div>
+
+        <button onclick="closeBreathingModal()" class="mt-4 text-gray-500 hover:text-gray-700">
+            Затвори
+        </button>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+let breathingInterval;
+let breathingPhase = 0; // 0: inhale, 1: hold, 2: exhale
+let breathingCount = 0;
+
+function startBreathingExercise() {
+    document.getElementById('breathingModal').classList.remove('hidden');
+}
+
+function closeBreathingModal() {
+    document.getElementById('breathingModal').classList.add('hidden');
+    stopBreathing();
+}
+
+function startBreathing() {
+    const circle = document.getElementById('breathingCircle');
+    const instruction = document.getElementById('breathingInstruction');
+    const startBtn = document.getElementById('startBreathingBtn');
+
+    startBtn.textContent = 'Во тек...';
+    startBtn.disabled = true;
+
+    breathingPhase = 0;
+    breathingCount = 4;
+
+    function updateBreathing() {
+        if (breathingPhase === 0) { // Inhale
+            instruction.textContent = 'Вдиши полека...';
+            circle.style.transform = 'scale(1.5)';
+            circle.style.backgroundColor = '#a855f7';
+            circle.textContent = breathingCount;
+
+            if (breathingCount <= 1) {
+                breathingPhase = 1;
+                breathingCount = 7;
+            } else {
+                breathingCount--;
+            }
+        } else if (breathingPhase === 1) { // Hold
+            instruction.textContent = 'Задржи...';
+            circle.textContent = breathingCount;
+
+            if (breathingCount <= 1) {
+                breathingPhase = 2;
+                breathingCount = 8;
+            } else {
+                breathingCount--;
+            }
+        } else { // Exhale
+            instruction.textContent = 'Издиши полека...';
+            circle.style.transform = 'scale(1)';
+            circle.style.backgroundColor = '#e9d5ff';
+            circle.textContent = breathingCount;
+
+            if (breathingCount <= 1) {
+                breathingPhase = 0;
+                breathingCount = 4;
+            } else {
+                breathingCount--;
+            }
+        }
+    }
+
+    breathingInterval = setInterval(updateBreathing, 1000);
+}
+
+function stopBreathing() {
+    clearInterval(breathingInterval);
+    const startBtn = document.getElementById('startBreathingBtn');
+    const circle = document.getElementById('breathingCircle');
+    const instruction = document.getElementById('breathingInstruction');
+
+    startBtn.textContent = 'Започни';
+    startBtn.disabled = false;
+    circle.style.transform = 'scale(1)';
+    circle.style.backgroundColor = '#e9d5ff';
+    circle.textContent = '4';
+    instruction.textContent = 'Подготви се...';
+}
+
+function startMeditation() {
+    showNotification('Функцијата за медитација ќе биде достапна наскоро', 'info');
+}
+
+function createCrisisPlan() {
+    showNotification('Функцијата за кризен план ќе биде достапна наскоро', 'info');
+}
+
+// Close modal when clicking outside
+document.getElementById('breathingModal').addEventListener('click', function(e) {
+    if (e.target === this) {
+        closeBreathingModal();
+    }
+});
+</script>
+{% endblock %}

@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="mk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}МенталноЗдравје - Дневник{% endblock %}</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        purple: {
+                            50: '#faf5ff',
+                            100: '#f3e8ff',
+                            200: '#e9d5ff',
+                            300: '#d8b4fe',
+                            400: '#c084fc',
+                            500: '#a855f7',
+                            600: '#9333ea',
+                            700: '#7c3aed',
+                            800: '#6b21a8',
+                            900: '#581c87',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    {% block extra_head %}{% endblock %}
+</head>
+<body class="bg-gradient-to-br from-purple-50 via-white to-purple-100 min-h-screen">
+    <!-- Navigation -->
+    <nav class="bg-white/80 backdrop-blur-md shadow-lg sticky top-0 z-50">
+        <div class="container mx-auto px-4">
+            <div class="flex justify-between items-center py-4">
+                <div class="flex items-center space-x-2">
+                    <div class="text-2xl">💜</div>
+                    <h1 class="text-xl font-bold text-purple-800">Мој Дневник</h1>
+                </div>
+                
+                <div class="hidden md:flex space-x-6">
+                    <a href="{{ url_for('index') }}" class="nav-link">🏠 Почетна</a>
+                    <a href="{{ url_for('journal.index') }}" class="nav-link">📝 Дневник</a>
+                    <a href="{{ url_for('habits.index') }}" class="nav-link">✅ Навики</a>
+                    <a href="{{ url_for('mood.index') }}" class="nav-link">😊 Расположение</a>
+                    <a href="{{ url_for('goals.index') }}" class="nav-link">🎯 Цели</a>
+                    <a href="{{ url_for('resources.index') }}" class="nav-link">📚 Ресурси</a>
+                    <a href="{{ url_for('analytics.dashboard') }}" class="nav-link">📊 Статистики</a>
+                </div>
+                
+                <!-- Mobile menu button -->
+                <button class="md:hidden" onclick="toggleMobileMenu()">
+                    <div class="w-6 h-6 flex flex-col justify-around">
+                        <div class="w-full h-0.5 bg-purple-600"></div>
+                        <div class="w-full h-0.5 bg-purple-600"></div>
+                        <div class="w-full h-0.5 bg-purple-600"></div>
+                    </div>
+                </button>
+            </div>
+            
+            <!-- Mobile menu -->
+            <div id="mobile-menu" class="hidden md:hidden pb-4">
+                <div class="flex flex-col space-y-2">
+                    <a href="{{ url_for('index') }}" class="nav-link-mobile">🏠 Почетна</a>
+                    <a href="{{ url_for('journal.index') }}" class="nav-link-mobile">📝 Дневник</a>
+                    <a href="{{ url_for('habits.index') }}" class="nav-link-mobile">✅ Навики</a>
+                    <a href="{{ url_for('mood.index') }}" class="nav-link-mobile">😊 Расположение</a>
+                    <a href="{{ url_for('goals.index') }}" class="nav-link-mobile">🎯 Цели</a>
+                    <a href="{{ url_for('resources.index') }}" class="nav-link-mobile">📚 Ресурси</a>
+                    <a href="{{ url_for('analytics.dashboard') }}" class="nav-link-mobile">📊 Статистики</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main content -->
+    <main class="container mx-auto px-4 py-8 max-w-6xl">
+        {% block content %}{% endblock %}
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-purple-800 text-white py-8 mt-16">
+        <div class="container mx-auto px-4 text-center">
+            <p class="mb-4">💜 Грижи се за своето ментално здравје 💜</p>
+            <p class="text-purple-200 text-sm">
+                Ако се чувствуваш во криза, контактирај: 
+                <a href="tel:023061661" class="underline font-semibold">02 3061-661</a>
+            </p>
+        </div>
+    </footer>
+
+    <!-- Notification container -->
+    <div id="notifications" class="fixed top-20 right-4 z-50 space-y-2"></div>
+
+    <script>
+        // Mobile menu toggle
+        function toggleMobileMenu() {
+            const menu = document.getElementById('mobile-menu');
+            menu.classList.toggle('hidden');
+        }
+
+        // Notification system
+        function showNotification(message, type = 'success') {
+            const notification = document.createElement('div');
+            const colors = {
+                success: 'bg-green-500',
+                error: 'bg-red-500',
+                warning: 'bg-yellow-500',
+                info: 'bg-blue-500'
+            };
+            
+            notification.className = `${colors[type]} text-white px-6 py-3 rounded-lg shadow-lg transform transition-all duration-300 translate-x-full`;
+            notification.textContent = message;
+            
+            document.getElementById('notifications').appendChild(notification);
+            
+            // Animate in
+            setTimeout(() => {
+                notification.classList.remove('translate-x-full');
+            }, 100);
+            
+            // Remove after 4 seconds
+            setTimeout(() => {
+                notification.classList.add('translate-x-full');
+                setTimeout(() => {
+                    notification.remove();
+                }, 300);
+            }, 4000);
+        }
+
+        // API helper
+        async function apiCall(url, data, method = 'POST') {
+            try {
+                const response = await fetch(url, {
+                    method: method,
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(data)
+                });
+                
+                return await response.json();
+            } catch (error) {
+                console.error('API Error:', error);
+                return { success: false, message: 'Грешка во комуникацијата' };
+            }
+        }
+    </script>
+
+    <style>
+        .nav-link {
+            @apply text-purple-700 hover:text-purple-900 font-medium px-3 py-2 rounded-lg hover:bg-purple-100 transition-all duration-200;
+        }
+        
+        .nav-link-mobile {
+            @apply text-purple-700 hover:text-purple-900 font-medium px-3 py-2 rounded-lg hover:bg-purple-100 transition-all duration-200 block;
+        }
+        
+        .btn-primary {
+            @apply bg-purple-600 hover:bg-purple-700 text-white px-6 py-3 rounded-xl font-medium transition-all duration-300 transform hover:scale-105 shadow-lg;
+        }
+        
+        .btn-secondary {
+            @apply bg-purple-100 hover:bg-purple-200 text-purple-700 px-6 py-3 rounded-xl font-medium transition-all duration-300 border border-purple-300;
+        }
+        
+        .card {
+            @apply bg-white rounded-2xl shadow-xl p-6 border border-purple-100;
+        }
+        
+        .input-field {
+            @apply w-full p-4 border-2 border-purple-200 rounded-xl focus:border-purple-500 focus:outline-none transition-colors duration-200;
+        }
+        
+        .textarea-field {
+            @apply w-full p-4 border-2 border-purple-200 rounded-xl focus:border-purple-500 focus:outline-none resize-none transitions-colors duration-200;
+        }
+    </style>
+
+    {% block extra_scripts %}{% endblock %}
+</body>
+</html>

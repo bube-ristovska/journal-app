@@ -1,0 +1,300 @@
+{% extends "base.html" %}
+
+{% block title %}Историја на записи - МенталноЗдравје{% endblock %}
+
+{% block content %}
+<div class="max-w-6xl mx-auto">
+    <!-- Header -->
+    <div class="text-center mb-8">
+        <div class="text-6xl mb-4">📚</div>
+        <h1 class="text-4xl font-bold text-purple-800 mb-2">Историја на записи</h1>
+        <p class="text-purple-600 text-lg">Твоето путување низ времето</p>
+    </div>
+
+    <!-- Search and Filter Bar -->
+    <div class="card mb-8">
+        <div class="flex flex-col md:flex-row gap-4 items-center">
+            <div class="flex-1">
+                <input 
+                    type="text" 
+                    id="search-input"
+                    class="input-field" 
+                    placeholder="🔍 Пребарај низ записите..."
+                >
+            </div>
+            <div class="flex gap-2">
+                <select id="sort-select" class="input-field w-auto">
+                    <option value="date-desc">Најнови први</option>
+                    <option value="date-asc">Најстари први</option>
+                    <option value="energy-high">Висока енергија</option>
+                    <option value="energy-low">Ниска енергија</option>
+                </select>
+            </div>
+        </div>
+    </div>
+
+    <!-- Stats Cards -->
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
+        <div class="card text-center bg-gradient-to-br from-purple-50 to-purple-100">
+            <div class="text-3xl mb-2">📝</div>
+            <div class="text-2xl font-bold text-purple-800">{{ entries|length }}</div>
+            <div class="text-purple-600">Вкупно записи</div>
+        </div>
+        
+        <div class="card text-center bg-gradient-to-br from-green-50 to-green-100">
+            <div class="text-3xl mb-2">⚡</div>
+            <div class="text-2xl font-bold text-green-800">
+                {% set avg_energy = entries|selectattr('energy_level')|map(attribute='energy_level')|list %}
+                {{ "%.1f"|format(avg_energy|sum / avg_energy|length) if avg_energy else "N/A" }}
+            </div>
+            <div class="text-green-600">Просечна енергија</div>
+        </div>
+        
+        <div class="card text-center bg-gradient-to-br from-blue-50 to-blue-100">
+            <div class="text-3xl mb-2">😌</div>
+            <div class="text-2xl font-bold text-blue-800">
+                {% set avg_stress = entries|selectattr('stress_level')|map(attribute='stress_level')|list %}
+                {{ "%.1f"|format(avg_stress|sum / avg_stress|length) if avg_stress else "N/A" }}
+            </div>
+            <div class="text-blue-600">Просечен стрес</div>
+        </div>
+        
+        <div class="card text-center bg-gradient-to-br from-yellow-50 to-yellow-100">
+            <div class="text-3xl mb-2">🔥</div>
+            <div class="text-2xl font-bold text-yellow-800">
+                {% set recent_entries = entries[:7] %}
+                {{ recent_entries|length }}
+            </div>
+            <div class="text-yellow-600">Записи (7 дена)</div>
+        </div>
+    </div>
+
+    <!-- Entries Timeline -->
+    <div id="entries-container" class="space-y-6">
+        {% for entry in entries %}
+        <div class="entry-card card hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-1" 
+             data-date="{{ entry.date.strftime('%Y-%m-%d') }}" 
+             data-energy="{{ entry.energy_level or 0 }}"
+             data-stress="{{ entry.stress_level or 0 }}">
+            
+            <!-- Entry Header -->
+            <div class="flex items-center justify-between mb-4 pb-4 border-b border-purple-100">
+                <div class="flex items-center space-x-3">
+                    <div class="text-2xl">📔</div>
+                    <div>
+                        <h3 class="text-lg font-semibold text-purple-800">
+                            {{ entry.date.strftime('%d %B %Y') }}
+                        </h3>
+                        <p class="text-sm text-purple-600">
+                            {{ entry.date.strftime('%A') }}
+                        </p>
+                    </div>
+                </div>
+                
+                <div class="flex items-center space-x-4">
+                    {% if entry.energy_level %}
+                    <div class="flex items-center space-x-1">
+                        <span class="text-sm text-purple-600">⚡</span>
+                        <span class="text-sm font-medium text-purple-700">{{ entry.energy_level }}/10</span>
+                    </div>
+                    {% endif %}
+                    
+                    {% if entry.stress_level %}
+                    <div class="flex items-center space-x-1">
+                        <span class="text-sm text-purple-600">😰</span>
+                        <span class="text-sm font-medium text-purple-700">{{ entry.stress_level }}/10</span>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Daily Question -->
+            {% if entry.question %}
+            <div class="mb-4">
+                <div class="flex items-start space-x-2 mb-2">
+                    <span class="text-purple-500 text-sm">💭</span>
+                    <p class="text-sm text-purple-600 italic">{{ entry.question }}</p>
+                </div>
+                {% if entry.answer %}
+                <div class="bg-purple-50 rounded-lg p-3 ml-4">
+                    <p class="text-purple-800">{{ entry.answer[:200] }}{% if entry.answer|length > 200 %}...{% endif %}</p>
+                </div>
+                {% endif %}
+            </div>
+            {% endif %}
+
+            <!-- Content Grid -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                {% if entry.highlight %}
+                <div class="bg-yellow-50 rounded-lg p-3">
+                    <div class="flex items-center space-x-2 mb-1">
+                        <span class="text-yellow-600">⭐</span>
+                        <span class="text-sm font-medium text-yellow-800">Најодбро</span>
+                    </div>
+                    <p class="text-yellow-700 text-sm">{{ entry.highlight }}</p>
+                </div>
+                {% endif %}
+
+                {% if entry.challenge %}
+                <div class="bg-red-50 rounded-lg p-3">
+                    <div class="flex items-center space-x-2 mb-1">
+                        <span class="text-red-600">💪</span>
+                        <span class="text-sm font-medium text-red-800">Предизвик</span>
+                    </div>
+                    <p class="text-red-700 text-sm">{{ entry.challenge }}</p>
+                </div>
+                {% endif %}
+
+                {% if entry.tomorrow_goal %}
+                <div class="bg-blue-50 rounded-lg p-3">
+                    <div class="flex items-center space-x-2 mb-1">
+                        <span class="text-blue-600">🎯</span>
+                        <span class="text-sm font-medium text-blue-800">Цел за утре</span>
+                    </div>
+                    <p class="text-blue-700 text-sm">{{ entry.tomorrow_goal }}</p>
+                </div>
+                {% endif %}
+            </div>
+
+            <!-- Gratitude Section -->
+            {% if entry.gratitude_1 or entry.gratitude_2 or entry.gratitude_3 %}
+            <div class="bg-green-50 rounded-lg p-3">
+                <div class="flex items-center space-x-2 mb-2">
+                    <span class="text-green-600">🙏</span>
+                    <span class="text-sm font-medium text-green-800">Благодарност</span>
+                </div>
+                <div class="space-y-1 text-sm text-green-700">
+                    {% if entry.gratitude_1 %}<p>• {{ entry.gratitude_1 }}</p>{% endif %}
+                    {% if entry.gratitude_2 %}<p>• {{ entry.gratitude_2 }}</p>{% endif %}
+                    {% if entry.gratitude_3 %}<p>• {{ entry.gratitude_3 }}</p>{% endif %}
+                </div>
+            </div>
+            {% endif %}
+
+            <!-- Entry Footer -->
+            <div class="flex justify-between items-center mt-4 pt-4 border-t border-purple-100">
+                <div class="text-xs text-purple-500">
+                    {% if entry.updated_at %}
+                        Последна промена: {{ entry.updated_at.strftime('%d.%m.%Y %H:%M') }}
+                    {% else %}
+                        Креиран: {{ entry.date.strftime('%d.%m.%Y') }}
+                    {% endif %}
+                </div>
+                
+                <button class="text-purple-600 hover:text-purple-800 text-sm font-medium transition-colors duration-200"
+                        onclick="expandEntry('{{ entry.date }}')">
+                    Детали →
+                </button>
+            </div>
+        </div>
+        {% empty %}
+        <!-- Empty State -->
+        <div class="text-center py-16">
+            <div class="text-6xl mb-4">📝</div>
+            <h3 class="text-2xl font-semibold text-purple-800 mb-2">Сè уште нема записи</h3>
+            <p class="text-purple-600 mb-6">Започни го твоето путување со пишување дневник!</p>
+            <a href="{{ url_for('journal.index') }}" class="btn-primary">
+                ✨ Напиши први запис
+            </a>
+        </div>
+        {% endfor %}
+    </div>
+
+    <!-- Load More Button -->
+    {% if entries|length >= 30 %}
+    <div class="text-center mt-8">
+        <button class="btn-secondary" id="load-more">
+            📚 Прикажи повеќе записи
+        </button>
+    </div>
+    {% endif %}
+
+    <!-- Quick Actions -->
+    <div class="flex flex-wrap justify-center gap-4 mt-8">
+        <a href="{{ url_for('journal.index') }}" class="btn-primary">
+            ✏️ Нов запис
+        </a>
+        <a href="{{ url_for('analytics.dashboard') }}" class="btn-secondary">
+            📊 Анализирај трендови
+        </a>
+        <a href="{{ url_for('journal.prompts') }}" class="btn-secondary">
+            💡 Инспирација
+        </a>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+    // Search functionality
+    const searchInput = document.getElementById('search-input');
+    const sortSelect = document.getElementById('sort-select');
+    const entriesContainer = document.getElementById('entries-container');
+    const entryCards = document.querySelectorAll('.entry-card');
+
+    searchInput.addEventListener('input', filterEntries);
+    sortSelect.addEventListener('change', sortEntries);
+
+    function filterEntries() {
+        const searchTerm = searchInput.value.toLowerCase();
+        
+        entryCards.forEach(card => {
+            const text = card.textContent.toLowerCase();
+            if (text.includes(searchTerm)) {
+                card.style.display = 'block';
+            } else {
+                card.style.display = 'none';
+            }
+        });
+    }
+
+    function sortEntries() {
+        const sortValue = sortSelect.value;
+        const entries = Array.from(entryCards);
+        
+        entries.sort((a, b) => {
+            switch(sortValue) {
+                case 'date-desc':
+                    return new Date(b.dataset.date) - new Date(a.dataset.date);
+                case 'date-asc':
+                    return new Date(a.dataset.date) - new Date(b.dataset.date);
+                case 'energy-high':
+                    return parseInt(b.dataset.energy) - parseInt(a.dataset.energy);
+                case 'energy-low':
+                    return parseInt(a.dataset.energy) - parseInt(b.dataset.energy);
+                default:
+                    return 0;
+            }
+        });
+        
+        entries.forEach(entry => entriesContainer.appendChild(entry));
+    }
+
+    function expandEntry(date) {
+        // Could navigate to detailed view or expand inline
+        showNotification(`Деталите за ${date} се подготвуваат...`, 'info');
+    }
+
+    // Smooth animations on scroll
+    const observerOptions = {
+        threshold: 0.1,
+        rootMargin: '0px 0px -50px 0px'
+    };
+
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.style.opacity = '1';
+                entry.target.style.transform = 'translateY(0)';
+            }
+        });
+    }, observerOptions);
+
+    entryCards.forEach(card => {
+        card.style.opacity = '0';
+        card.style.transform = 'translateY(20px)';
+        card.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+        observer.observe(card);
+    });
+</script>
+{% endblock %}

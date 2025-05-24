@@ -7,7 +7,7 @@
     <!-- Header -->
     <div class="text-center mb-8">
         <div class="text-6xl mb-4">📔</div>
-        <h1 class="text-4xl font-bold text-purple-800 mb-2">Дневен Запис</h1>
+        <h1 class="text-4xl font-bold text-purple-800 mb-2">Дневен запис</h1>
         <p class="text-purple-600 text-lg">{{ entry.date.strftime('%d.%m.%Y') }}</p>
     </div>
 
@@ -31,7 +31,8 @@
             </label>
             <textarea
                 name="answer"
-                class="textarea-field h-32"
+                  class="w-full px-4 py-3 rounded-2xl border border-purple-300 bg-white focus:ring-2 focus:ring-purple-400 focus:outline-none shadow-sm transition duration-200"
+
                 placeholder="Сподели ги твоите мисли..."
             >{{ entry.answer or '' }}</textarea>
         </div>
@@ -46,7 +47,8 @@
                     <input
                         type="text"
                         name="gratitude_1"
-                        class="input-field"
+                            class="w-full px-4 py-3 rounded-2xl border border-purple-300 bg-white focus:ring-2 focus:ring-purple-400 focus:outline-none shadow-sm transition duration-200"
+
                         placeholder="1. Нешто мало што те направи среќен/на"
                         value="{{ entry.gratitude_1 or '' }}"
                     >
@@ -55,7 +57,8 @@
                     <input
                         type="text"
                         name="gratitude_2"
-                        class="input-field"
+                            class="w-full px-4 py-3 rounded-2xl border border-purple-300 bg-white focus:ring-2 focus:ring-purple-400 focus:outline-none shadow-sm transition duration-200"
+
                         placeholder="2. Некој кој ти помогна или те воодушеви"
                         value="{{ entry.gratitude_2 or '' }}"
                     >
@@ -64,7 +67,8 @@
                     <input
                         type="text"
                         name="gratitude_3"
-                        class="input-field"
+                            class="w-full px-4 py-3 rounded-2xl border border-purple-300 bg-white focus:ring-2 focus:ring-purple-400 focus:outline-none shadow-sm transition duration-200"
+
                         placeholder="3. Искуство или момент кој го цениш"
                         value="{{ entry.gratitude_3 or '' }}"
                     >
@@ -80,7 +84,7 @@
                 </label>
                 <textarea
                     name="highlight"
-                    class="textarea-field h-24"
+    class="w-full px-4 py-3 rounded-2xl border border-purple-300 bg-white focus:ring-2 focus:ring-purple-400 focus:outline-none shadow-sm transition duration-200"
                     placeholder="Што беше најубавото во твојот ден?"
                 >{{ entry.highlight or '' }}</textarea>
             </div>
@@ -91,7 +95,7 @@
                 </label>
                 <textarea
                     name="challenge"
-                    class="textarea-field h-24"
+    class="w-full px-4 py-3 rounded-2xl border border-purple-300 bg-white focus:ring-2 focus:ring-purple-400 focus:outline-none shadow-sm transition duration-200"
                     placeholder="Како се справи со тешкотиите?"
                 >{{ entry.challenge or '' }}</textarea>
             </div>
@@ -105,7 +109,8 @@
             <input
                 type="text"
                 name="tomorrow_goal"
-                class="input-field"
+                    class="w-full px-4 py-3 rounded-2xl border border-purple-300 bg-white focus:ring-2 focus:ring-purple-400 focus:outline-none shadow-sm transition duration-200"
+
                 placeholder="Што сакаш да постигнеш утре?"
                 value="{{ entry.tomorrow_goal or '' }}"
             >
@@ -160,7 +165,8 @@
 
         <!-- Save Button -->
         <div class="text-center pt-6">
-            <button type="submit" class="btn-primary text-lg px-8 py-4">
+            <button type="submit"     class="bg-gradient-to-r from-purple-500 to-purple-700 text-white font-semibold rounded-full shadow-lg hover:shadow-xl hover:from-purple-600 hover:to-purple-800 transition-all duration-300 px-8 py-4"
+>
                 💾 Зачувај запис
             </button>
         </div>
@@ -175,7 +181,7 @@
             💡 Инспирација за пишување
         </a>
         <a href="{{ url_for('mood.index') }}" class="btn-secondary">
-            😊 Зачувај расположение
+            😊 Внеси расположение
         </a>
     </div>
 </div>

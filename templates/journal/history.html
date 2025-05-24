@@ -8,17 +8,18 @@
     <div class="text-center mb-8">
         <div class="text-6xl mb-4">📚</div>
         <h1 class="text-4xl font-bold text-purple-800 mb-2">Историја на записи</h1>
-        <p class="text-purple-600 text-lg">Твоето путување низ времето</p>
+        <p class="text-purple-600 text-lg">Твоето патување низ времето</p>
     </div>
 
     <!-- Search and Filter Bar -->
-    <div class="card mb-8">
+    <div class="card rounded-xl p-2 mb-8">
         <div class="flex flex-col md:flex-row gap-4 items-center">
             <div class="flex-1">
                 <input 
                     type="text" 
                     id="search-input"
-                    class="input-field" 
+                        class="inline-block bg-white border border-purple-400 text-purple-700 font-semibold rounded-full px-6 py-3 shadow hover:bg-purple-50 transition-all duration-300"
+
                     placeholder="🔍 Пребарај низ записите..."
                 >
             </div>
@@ -35,13 +36,13 @@
 
     <!-- Stats Cards -->
     <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
-        <div class="card text-center bg-gradient-to-br from-purple-50 to-purple-100">
+        <div class="card rounded-xl p-2 text-center bg-gradient-to-br from-purple-50 to-purple-100">
             <div class="text-3xl mb-2">📝</div>
             <div class="text-2xl font-bold text-purple-800">{{ entries|length }}</div>
             <div class="text-purple-600">Вкупно записи</div>
         </div>
         
-        <div class="card text-center bg-gradient-to-br from-green-50 to-green-100">
+        <div class="card rounded-xl p-2 text-center bg-gradient-to-br from-green-50 to-green-100">
             <div class="text-3xl mb-2">⚡</div>
             <div class="text-2xl font-bold text-green-800">
                 {% set avg_energy = entries|selectattr('energy_level')|map(attribute='energy_level')|list %}
@@ -50,7 +51,7 @@
             <div class="text-green-600">Просечна енергија</div>
         </div>
         
-        <div class="card text-center bg-gradient-to-br from-blue-50 to-blue-100">
+        <div class="card rounded-xl p-2 text-center bg-gradient-to-br from-blue-50 to-blue-100">
             <div class="text-3xl mb-2">😌</div>
             <div class="text-2xl font-bold text-blue-800">
                 {% set avg_stress = entries|selectattr('stress_level')|map(attribute='stress_level')|list %}
@@ -59,7 +60,7 @@
             <div class="text-blue-600">Просечен стрес</div>
         </div>
         
-        <div class="card text-center bg-gradient-to-br from-yellow-50 to-yellow-100">
+        <div class="card rounded-xl p-2 text-center bg-gradient-to-br from-yellow-50 to-yellow-100">
             <div class="text-3xl mb-2">🔥</div>
             <div class="text-2xl font-bold text-yellow-800">
                 {% set recent_entries = entries[:7] %}
@@ -72,7 +73,7 @@
     <!-- Entries Timeline -->
     <div id="entries-container" class="space-y-6">
         {% for entry in entries %}
-        <div class="entry-card card hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-1" 
+        <div class="entry-card card rounded-xl p-2 hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-1"
              data-date="{{ entry.date.strftime('%Y-%m-%d') }}" 
              data-energy="{{ entry.energy_level or 0 }}"
              data-stress="{{ entry.stress_level or 0 }}">
@@ -187,17 +188,17 @@
                 </button>
             </div>
         </div>
-        {% empty %}
-        <!-- Empty State -->
-        <div class="text-center py-16">
-            <div class="text-6xl mb-4">📝</div>
-            <h3 class="text-2xl font-semibold text-purple-800 mb-2">Сè уште нема записи</h3>
-            <p class="text-purple-600 mb-6">Започни го твоето путување со пишување дневник!</p>
-            <a href="{{ url_for('journal.index') }}" class="btn-primary">
-                ✨ Напиши први запис
-            </a>
-        </div>
-        {% endfor %}
+      {% else %}
+<!-- Empty State -->
+<div class="text-center py-16">
+    <div class="text-6xl mb-4">📝</div>
+    <h3 class="text-2xl font-semibold text-purple-800 mb-2">Сè уште нема записи</h3>
+    <p class="text-purple-600 mb-6">Започни го твоето патување со пишување дневник!</p>
+    <a href="{{ url_for('journal.index') }}" class="btn-primary">
+        ✨ Напиши први запис
+    </a>
+</div>
+{% endfor %}
     </div>
 
     <!-- Load More Button -->

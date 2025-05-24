@@ -11,7 +11,7 @@
                 ← Назад кон цели
             </a>
         </div>
-        <h1 class="text-3xl font-bold text-purple-800 mb-2">🎯 Постави Нова Цел</h1>
+        <h1 class="text-3xl font-bold text-purple-800 mb-2">🎯 Постави нова цел</h1>
         <p class="text-purple-600">Дефинирај ја твојата цел и создади план за нејзино остварување</p>
     </div>
 
@@ -23,17 +23,22 @@
                 <h2 class="text-xl font-bold text-purple-800 mb-4">📝 Основни информации</h2>
 
                 <div class="grid md:grid-cols-2 gap-6">
-                    <div>
-                        <label class="block text-sm font-medium text-purple-700 mb-2">
-                            Наслов на целта *
-                        </label>
-                        <input type="text"
-                               id="title"
-                               name="title"
-                               class="input-field"
-                               placeholder="Пример: Научи нов јазик"
-                               required>
+                    <div class="grid md:grid-cols-2 gap-6">
+                        <div>
+                            <label class="block text-sm font-medium text-purple-700 mb-2">
+                                Наслов на целта *
+                            </label>
+                            <input
+                                    type="text"
+                                    id="title"
+                                    name="title"
+                                    class="w-full px-4 py-3 border border-purple-300 rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition duration-300 placeholder-purple-300"
+                                    placeholder="Пример: Научи нов јазик"
+                                    required
+                            >
+                        </div>
                     </div>
+
 
                     <div>
                         <label class="block text-sm font-medium text-purple-700 mb-2">
@@ -52,12 +57,15 @@
                     <label class="block text-sm font-medium text-purple-700 mb-2">
                         Опис на целта
                     </label>
-                    <textarea id="description"
-                              name="description"
-                              class="textarea-field"
-                              rows="3"
-                              placeholder="Опиши ја твојата цел подетално..."></textarea>
+                    <textarea
+                            id="description"
+                            name="description"
+                            rows="3"
+                            placeholder="Опиши ја твојата цел подетално..."
+                            class="w-full px-4 py-3 border border-purple-300 rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition duration-300 placeholder-purple-300 resize-none"
+                    ></textarea>
                 </div>
+
             </div>
 
             <!-- Goal Details -->
@@ -92,11 +100,11 @@
             <!-- Milestones -->
             <div class="mb-8">
                 <div class="flex justify-between items-center mb-4">
-                    <h2 class="text-xl font-bold text-purple-800">🗓️ Мерни камења</h2>
+                    <h2 class="text-xl font-bold text-purple-800">🗓️ Клучни моменти</h2>
                     <button type="button"
                             onclick="addMilestone()"
                             class="btn-secondary text-sm">
-                        ➕ Додај мерен камен
+                        ➕ Додај клучен момент
                     </button>
                 </div>
 
@@ -108,7 +116,7 @@
                     <div class="flex items-start space-x-3">
                         <div class="text-blue-600 text-xl">💡</div>
                         <div>
-                            <h4 class="font-medium text-blue-800 mb-1">Совет за мерни камења</h4>
+                            <h4 class="font-medium text-blue-800 mb-1">Совет за клучни моменти</h4>
                             <p class="text-sm text-blue-700">
                                 Подели ја твојата цел на помали, остварливи чекори.
                                 Ова ќе ти помогне да го следиш прогресот и да останеш мотивиран/а.
@@ -120,44 +128,34 @@
 
             <!-- SMART Goal Guide -->
             <div class="mb-8 p-6 bg-gradient-to-r from-purple-50 to-pink-50 rounded-xl">
-                <h2 class="text-xl font-bold text-purple-800 mb-4">🎯 SMART Критериуми</h2>
+                <h2 class="text-xl font-bold text-purple-800 mb-4">🎯 SMART критериуми</h2>
                 <p class="text-purple-700 mb-4">Твојата цел треба да биде:</p>
 
                 <div class="grid md:grid-cols-2 lg:grid-cols-5 gap-4">
                     <div class="text-center">
                         <div class="text-2xl mb-2">🎯</div>
-                        <h4 class="font-bold text-purple-800">Specific</h4>
-                        <p class="text-xs text-purple-600">Специфична</p>
-                    </div>
-                    <div class="text-center">
-                        <div class="text-2xl mb-2">📏</div>
-                        <h4 class="font-bold text-purple-800">Measurable</h4>
-                        <p class="text-xs text-purple-600">Мерлива</p>
+                        <h4 class="font-bold text-purple-800">Специфична</h4>
                     </div>
                     <div class="text-center">
                         <div class="text-2xl mb-2">✅</div>
-                        <h4 class="font-bold text-purple-800">Achievable</h4>
-                        <p class="text-xs text-purple-600">Остварлива</p>
+                        <h4 class="font-bold text-purple-800">Остварлива</h4>
                     </div>
                     <div class="text-center">
                         <div class="text-2xl mb-2">🎪</div>
-                        <h4 class="font-bold text-purple-800">Relevant</h4>
-                        <p class="text-xs text-purple-600">Релевантна</p>
+                        <h4 class="font-bold text-purple-800">Релевантна</h4>
                     </div>
                     <div class="text-center">
                         <div class="text-2xl mb-2">⏰</div>
-                        <h4 class="font-bold text-purple-800">Time-bound</h4>
-                        <p class="text-xs text-purple-600">Временски ограничена</p>
+                        <h4 class="font-bold text-purple-800">Временски ограничена</h4>
                     </div>
                 </div>
             </div>
 
             <!-- Action Buttons -->
             <div class="flex justify-end space-x-4">
-                <a href="{{ url_for('goals.index') }}" class="btn-secondary">
-                    Откажи
-                </a>
-                <button type="submit" class="btn-primary">
+
+                <button type="submit"
+                        class="bg-green-500 text-white font-semibold px-6 py-3 rounded-xl shadow-md hover:bg-green-600 hover:shadow-lg transform hover:scale-105 transition-all duration-300">
                     🚀 Создади цел
                 </button>
             </div>
@@ -168,15 +166,15 @@
 
 {% block extra_scripts %}
 <script>
-let milestoneCounter = 0;
+    let milestoneCounter = 0;
 
-function addMilestone() {
-    milestoneCounter++;
-    const container = document.getElementById('milestones-container');
-    const milestoneHtml = `
+    function addMilestone() {
+        milestoneCounter++;
+        const container = document.getElementById('milestones-container');
+        const milestoneHtml = `
         <div class="milestone-item border border-purple-200 rounded-lg p-4" id="milestone-${milestoneCounter}">
             <div class="flex justify-between items-start mb-3">
-                <h4 class="font-medium text-purple-800">Мерен камен ${milestoneCounter}</h4>
+                <h4 class="font-medium text-purple-800">Момент ${milestoneCounter}</h4>
                 <button type="button"
                         onclick="removeMilestone(${milestoneCounter})"
                         class="text-red-500 hover:text-red-700">
@@ -192,7 +190,7 @@ function addMilestone() {
                     <input type="text"
                            name="milestone_title_${milestoneCounter}"
                            class="input-field text-sm"
-                           placeholder="Опис на мерниот камен"
+                           placeholder="Опис"
                            required>
                 </div>
 
@@ -214,70 +212,70 @@ function addMilestone() {
                 <textarea name="milestone_description_${milestoneCounter}"
                           class="textarea-field text-sm"
                           rows="2"
-                          placeholder="Детален опис на мерниот камен..."></textarea>
+                          placeholder="Детален опис..."></textarea>
             </div>
         </div>
     `;
 
-    container.insertAdjacentHTML('beforeend', milestoneHtml);
-}
-
-function removeMilestone(id) {
-    const milestone = document.getElementById(`milestone-${id}`);
-    if (milestone) {
-        milestone.remove();
+        container.insertAdjacentHTML('beforeend', milestoneHtml);
     }
-}
 
-// Form submission
-document.getElementById('goal-form').addEventListener('submit', async function(e) {
-    e.preventDefault();
-
-    const formData = new FormData(this);
-    const goalData = {
-        title: formData.get('title'),
-        description: formData.get('description'),
-        category: formData.get('category'),
-        target_date: formData.get('target_date'),
-        priority: formData.get('priority'),
-        milestones: []
-    };
-
-    // Collect milestones
-    for (let i = 1; i <= milestoneCounter; i++) {
-        const titleInput = document.querySelector(`input[name="milestone_title_${i}"]`);
-        if (titleInput && titleInput.value.trim()) {
-            const milestone = {
-                title: titleInput.value,
-                description: document.querySelector(`textarea[name="milestone_description_${i}"]`)?.value || '',
-                due_date: document.querySelector(`input[name="milestone_date_${i}"]`)?.value || null
-            };
-            goalData.milestones.push(milestone);
+    function removeMilestone(id) {
+        const milestone = document.getElementById(`milestone-${id}`);
+        if (milestone) {
+            milestone.remove();
         }
     }
 
-    try {
-        const response = await fetch('/goals/create', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(goalData)
-        });
+    // Form submission
+    document.getElementById('goal-form').addEventListener('submit', async function (e) {
+        e.preventDefault();
 
-        const result = await response.json();
-        if (result.success) {
-            showNotification('Целта е успешно креирана!', 'success');
-            setTimeout(() => {
-                window.location.href = '/goals';
-            }, 1500);
-        } else {
-            showNotification(result.message || 'Грешка при креирање на целта', 'error');
+        const formData = new FormData(this);
+        const goalData = {
+            title: formData.get('title'),
+            description: formData.get('description'),
+            category: formData.get('category'),
+            target_date: formData.get('target_date'),
+            priority: formData.get('priority'),
+            milestones: []
+        };
+
+        // Collect milestones
+        for (let i = 1; i <= milestoneCounter; i++) {
+            const titleInput = document.querySelector(`input[name="milestone_title_${i}"]`);
+            if (titleInput && titleInput.value.trim()) {
+                const milestone = {
+                    title: titleInput.value,
+                    description: document.querySelector(`textarea[name="milestone_description_${i}"]`)?.value || '',
+                    due_date: document.querySelector(`input[name="milestone_date_${i}"]`)?.value || null
+                };
+                goalData.milestones.push(milestone);
+            }
         }
-    } catch (error) {
-        showNotification('Грешка во комуникацијата', 'error');
-    }
-});
 
-// Add first milestone by default
-addMilestone();
+        try {
+            const response = await fetch('/goals/create', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify(goalData)
+            });
+
+            const result = await response.json();
+            if (result.success) {
+                showNotification('Целта е успешно креирана!', 'success');
+                setTimeout(() => {
+                    window.location.href = '/goals';
+                }, 1500);
+            } else {
+                showNotification(result.message || 'Грешка при креирање на целта', 'error');
+            }
+        } catch (error) {
+            showNotification('Грешка во комуникацијата', 'error');
+        }
+    });
+
+    // Add first milestone by default
+    addMilestone();
 </script>
 {% endblock %}

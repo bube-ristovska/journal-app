@@ -1,12 +1,12 @@
 {% extends "base.html" %}
 
-{% block title %}Статистики за Навики - МенталноЗдравје{% endblock %}
+{% block title %}Статистики за навики - МенталноЗдравје{% endblock %}
 
 {% block content %}
 <div class="space-y-8">
     <!-- Header -->
     <div class="text-center">
-        <h1 class="text-4xl font-bold text-purple-800 mb-4">📊 Статистики за Навики</h1>
+        <h1 class="text-4xl font-bold text-purple-800 mb-4">📊 Статистики за навики</h1>
         <p class="text-purple-600 text-lg">
             Анализа на твојот прогрес во последните 30 дена
         </p>
@@ -47,15 +47,10 @@
 
     <!-- Completion Rate Chart -->
     <div class="card">
-        <h2 class="text-2xl font-bold text-purple-800 mb-6">📈 Преглед на Успешност</h2>
-        <div class="relative">
-            <canvas id="completionChart" width="400" height="200"></canvas>
-        </div>
-    </div>
 
     <!-- Individual Habit Analytics -->
     <div class="card">
-        <h2 class="text-2xl font-bold text-purple-800 mb-6">🔍 Детални Статистики по Навика</h2>
+        <h2 class="text-2xl font-bold text-purple-800 mb-6">🔍 Детални статистики по навика</h2>
 
         <div class="space-y-6">
             {% for habit_id, data in analytics_data.items() %}
@@ -81,8 +76,6 @@
                         <span>🔥 {{ data.streak }} дена стрик</span>
                     </div>
                     <div class="w-full bg-purple-200 rounded-full h-3">
-                        <div class="bg-gradient-to-r from-purple-500 to-purple-600 h-3 rounded-full transition-all duration-500"
-                             style="width: {{ data.completion_rate }}%"></div>
                     </div>
                 </div>
 
@@ -122,54 +115,12 @@
         </div>
     </div>
 
-    <!-- Insights and Recommendations -->
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <div class="card">
-            <h3 class="text-xl font-bold text-purple-800 mb-4">🎉 Твои Успеси</h3>
-            <div class="space-y-3">
-                {% set best_habits = analytics_data.values()|sort(attribute='completion_rate', reverse=true)[:3] %}
-                {% for habit_data in best_habits %}
-                <div class="flex items-center space-x-3 p-3 bg-green-50 border border-green-200 rounded-lg">
-                    <span class="text-xl">{{ habit_data.habit.icon }}</span>
-                    <div class="flex-1">
-                        <p class="font-medium text-green-800">{{ habit_data.habit.name }}</p>
-                        <p class="text-sm text-green-600">{{ "%.1f"|format(habit_data.completion_rate) }}% успешност</p>
-                    </div>
-                    <span class="text-2xl">🏆</span>
-                </div>
-                {% endfor %}
-            </div>
-        </div>
-
-        <div class="card">
-            <h3 class="text-xl font-bold text-purple-800 mb-4">💪 Области за Подобрување</h3>
-            <div class="space-y-3">
-                {% set improvement_habits = analytics_data.values()|sort(attribute='completion_rate')[:3] %}
-                {% for habit_data in improvement_habits %}
-                <div class="flex items-center space-x-3 p-3 bg-orange-50 border border-orange-200 rounded-lg">
-                    <span class="text-xl">{{ habit_data.habit.icon }}</span>
-                    <div class="flex-1">
-                        <p class="font-medium text-orange-800">{{ habit_data.habit.name }}</p>
-                        <p class="text-sm text-orange-600">{{ "%.1f"|format(habit_data.completion_rate) }}% успешност</p>
-                    </div>
-                    <span class="text-2xl">📈</span>
-                </div>
-                {% endfor %}
-            </div>
-        </div>
-    </div>
 
     <!-- Action Buttons -->
     <div class="flex justify-center space-x-4">
         <a href="{{ url_for('habits.index') }}" class="btn-primary">
-            ✅ Назад кон Навики
+            ✅ Назад кон навики
         </a>
-        <button onclick="exportAnalytics()" class="btn-secondary">
-            📊 Извези Статистики
-        </button>
-        <button onclick="printAnalytics()" class="btn-secondary">
-            🖨️ Печати Извештај
-        </button>
     </div>
 </div>
 
@@ -181,17 +132,6 @@ document.addEventListener('DOMContentLoaded', function() {
 function createCompletionChart() {
     const ctx = document.getElementById('completionChart').getContext('2d');
 
-    const habits = [
-        {% for habit_id, data in analytics_data.items() %}
-        {
-            name: "{{ data.habit.name }}",
-            completion: {{ data.completion_rate }},
-            completed: {{ data.completed_days }},
-            total: {{ data.total_days }},
-            category: "{{ data.habit.category }}"
-        },
-        {% endfor %}
-    ];
 
     const categoryColors = {
         'Физичко здравје': '#ef4444',
@@ -268,41 +208,7 @@ function createCompletionChart() {
     });
 }
 
-function exportAnalytics() {
-    const analyticsData = {
-        exportDate: new Date().toLocaleDateString('mk-MK'),
-        period: 'Последни 30 дена',
-        summary: {
-            totalHabits: {{ analytics_data|length }},
-            averageCompletion: {{ "%.1f"|format(avg_completion) }},
-            bestStreak: {{ best_streak.streak if best_streak else 0 }},
-            totalCompleted: {{ total_completed }}
-        },
-        habits: [
-            {% for habit_id, data in analytics_data.items() %}
-            {
-                name: "{{ data.habit.name }}",
-                category: "{{ data.habit.category }}",
-                completionRate: {{ data.completion_rate }},
-                completedDays: {{ data.completed_days }},
-                totalDays: {{ data.total_days }},
-                currentStreak: {{ data.streak }}
-            },
-            {% endfor %}
-        ]
-    };
 
-    const dataStr = JSON.stringify(analyticsData, null, 2);
-    const dataBlob = new Blob([dataStr], {type: 'application/json'});
-    const url = URL.createObjectURL(dataBlob);
-    const link = document.createElement('a');
-    link.href = url;
-    link.download = `статистики-навики-${new Date().toISOString().split('T')[0]}.json`;
-    link.click();
-    URL.revokeObjectURL(url);
-
-    showNotification('Статистиките се извезени! 📊', 'success');
-}
 
 function printAnalytics() {
     window.print();

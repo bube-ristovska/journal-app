@@ -6,7 +6,7 @@
 <div class="mb-8">
     <div class="flex justify-between items-center">
         <div>
-            <h1 class="text-3xl font-bold text-purple-800 mb-2">🎯 Мои Цели</h1>
+            <h1 class="text-3xl font-bold text-purple-800 mb-2">🎯 Мои цели</h1>
             <p class="text-purple-600">Следи го твојот прогрес и оствари ги твоите соништа</p>
         </div>
         <a href="{{ url_for('goals.set_goal') }}" class="btn-primary">
@@ -18,7 +18,7 @@
 {% if goals %}
 <div class="space-y-6">
     {% for goal in goals %}
-    <div class="card hover:shadow-2xl transition-all duration-300">
+<div class="card border rounded-xl p-4">
         <!-- Goal Header -->
         <div class="flex justify-between items-start mb-4">
             <div class="flex-1">
@@ -88,7 +88,7 @@
         <!-- Milestones -->
         {% if goal.milestones %}
         <div class="mb-4">
-            <h4 class="font-semibold text-purple-800 mb-3">🗓️ Мерни камења</h4>
+            <h4 class="font-semibold text-purple-800 mb-3">🗓️ Клучни моменти</h4>
             <div class="space-y-2">
                 {% for milestone in goal.milestones %}
                 <div class="flex items-center space-x-3 p-3 rounded-lg
@@ -166,20 +166,20 @@
 
 <!-- Goal Statistics -->
 <div class="mt-12 grid md:grid-cols-3 gap-6">
-    <div class="card text-center">
+    <div class="card  rounded-xltext-center">
         <div class="text-4xl mb-3">🎯</div>
         <h3 class="text-lg font-bold text-purple-800 mb-2">Активни цели</h3>
         <p class="text-3xl font-bold text-purple-600">{{ goals|length }}</p>
     </div>
 
-    <div class="card text-center">
+    <div class="card rounded-xl text-center">
         <div class="text-4xl mb-3">📈</div>
         <h3 class="text-lg font-bold text-purple-800 mb-2">Просечен прогрес</h3>
         {% set avg_progress = (goals|sum(attribute='progress') / goals|length) if goals else 0 %}
         <p class="text-3xl font-bold text-purple-600">{{ "%.0f"|format(avg_progress) }}%</p>
     </div>
 
-    <div class="card text-center">
+    <div class="card  rounded-xltext-center">
         <div class="text-4xl mb-3">✅</div>
         <h3 class="text-lg font-bold text-purple-800 mb-2">Завршени цели</h3>
         {% set completed_goals = goals|selectattr('progress', 'ge', 100)|list|length %}
@@ -189,7 +189,7 @@
 
 {% else %}
 <!-- Empty State -->
-<div class="card text-center py-16">
+<div class="card  rounded-xl text-center py-16">
     <div class="text-8xl mb-6">🎯</div>
     <h2 class="text-2xl font-bold text-purple-800 mb-4">Започни со твоите цели!</h2>
     <p class="text-purple-600 mb-8 max-w-md mx-auto">
@@ -246,7 +246,7 @@ async function toggleMilestone(milestoneId, completed) {
 
         const result = await response.json();
         if (result.success) {
-            showNotification('Мерниот камен е ажуриран!', 'success');
+            showNotification('Ажурирано!', 'success');
             setTimeout(() => {
                 location.reload();
             }, 1000);

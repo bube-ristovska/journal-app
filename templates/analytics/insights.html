@@ -46,7 +46,7 @@
                     <a href="/mood" class="nav-link">😊 Расположение</a>
                     <a href="/goals" class="nav-link">🎯 Цели</a>
                     <a href="/resources" class="nav-link">📚 Ресурси</a>
-                    <a href="/analytics" class="nav-link font-bold bg-purple-100">📊 Статистики</a>
+                    <a href="/analytics" class="nav-link">📊 Статистики</a>
                 </div>
 
                 <!-- Mobile menu button -->
@@ -78,7 +78,7 @@
     <main class="container mx-auto px-4 py-8 max-w-6xl">
         <!-- Header -->
         <div class="mb-8">
-            <h1 class="text-4xl font-bold text-purple-800 mb-2">💡 Твои Увиди</h1>
+            <h1 class="text-4xl font-bold text-purple-800 mb-2">💡 Препораки</h1>
             <p class="text-purple-600 text-lg">Персонализирани препораки базирани на твоите податоци</p>
         </div>
 
@@ -89,7 +89,7 @@
                     Статистики
                 </a>
                 <a href="/analytics/insights" class="px-6 py-3 font-medium text-purple-700 border-b-2 border-purple-500 bg-purple-50">
-                    Увиди
+                    Препораки
                 </a>
             </div>
         </div>
@@ -216,35 +216,27 @@
         {% else %}
             <!-- No insights available -->
             <div class="card text-center py-16">
-                <div class="mb-6">
-                    <div class="text-8xl mb-4">🔍</div>
-                    <h2 class="text-3xl font-bold text-purple-800 mb-4">Нема достапни увиди</h2>
-                    <p class="text-purple-600 text-lg mb-8 max-w-2xl mx-auto">
-                        За да генерираме персонализирани увиди, потребно е да имаш повеќе податоци.
-                        Започни со записување на твоето секојдневие!
-                    </p>
-                </div>
 
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 max-w-4xl mx-auto">
-                    <a href="/mood" class="card bg-gradient-to-br from-pink-100 to-pink-200 hover:from-pink-200 hover:to-pink-300 transition-all duration-300 transform hover:scale-105">
+                    <a href="/mood" class="card  rounded-xl bg-gradient-to-br from-pink-100 to-pink-200 hover:from-pink-200 hover:to-pink-300 transition-all duration-300 transform hover:scale-105">
                         <div class="text-4xl mb-3">😊</div>
                         <h3 class="font-bold text-pink-800 mb-2">Расположение</h3>
                         <p class="text-pink-600 text-sm">Следи го твоето секојдневно расположение</p>
                     </a>
 
-                    <a href="/habits" class="card bg-gradient-to-br from-green-100 to-green-200 hover:from-green-200 hover:to-green-300 transition-all duration-300 transform hover:scale-105">
+                    <a href="/habits" class="card  rounded-xl bg-gradient-to-br from-green-100 to-green-200 hover:from-green-200 hover:to-green-300 transition-all duration-300 transform hover:scale-105">
                         <div class="text-4xl mb-3">✅</div>
                         <h3 class="font-bold text-green-800 mb-2">Навики</h3>
                         <p class="text-green-600 text-sm">Создавај и следи позитивни навики</p>
                     </a>
 
-                    <a href="/goals" class="card bg-gradient-to-br from-blue-100 to-blue-200 hover:from-blue-200 hover:to-blue-300 transition-all duration-300 transform hover:scale-105">
+                    <a href="/goals" class="card  rounded-xl bg-gradient-to-br from-blue-100 to-blue-200 hover:from-blue-200 hover:to-blue-300 transition-all duration-300 transform hover:scale-105">
                         <div class="text-4xl mb-3">🎯</div>
                         <h3 class="font-bold text-blue-800 mb-2">Цели</h3>
                         <p class="text-blue-600 text-sm">Постави и оствари твоите цели</p>
                     </a>
 
-                    <a href="/journal" class="card bg-gradient-to-br from-purple-100 to-purple-200 hover:from-purple-200 hover:to-purple-300 transition-all duration-300 transform hover:scale-105">
+                    <a href="/journal" class="card  rounded-xl bg-gradient-to-br from-purple-100 to-purple-200 hover:from-purple-200 hover:to-purple-300 transition-all duration-300 transform hover:scale-105">
                         <div class="text-4xl mb-3">📝</div>
                         <h3 class="font-bold text-purple-800 mb-2">Дневник</h3>
                         <p class="text-purple-600 text-sm">Запишувај ги твоите мисли и искуства</p>
@@ -259,7 +251,7 @@
 
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 <!-- Sleep tip -->
-                <div class="card bg-gradient-to-br from-indigo-50 to-indigo-100 border-indigo-200">
+                <div class="card rounded-xl bg-gradient-to-br from-indigo-50 to-indigo-100 border-indigo-200">
                     <div class="text-4xl mb-4">🛏️</div>
                     <h3 class="text-lg font-bold text-indigo-800 mb-3">Квалитетен сон</h3>
                     <p class="text-indigo-700 text-sm mb-4">
@@ -271,7 +263,7 @@
                 </div>
 
                 <!-- Exercise tip -->
-                <div class="card bg-gradient-to-br from-green-50 to-green-100 border-green-200">
+                <div class="card rounded-xl bg-gradient-to-br from-green-50 to-green-100 border-green-200">
                     <div class="text-4xl mb-4">🏃‍♀️</div>
                     <h3 class="text-lg font-bold text-green-800 mb-3">Физичка активност</h3>
                     <p class="text-green-700 text-sm mb-4">
@@ -283,7 +275,7 @@
                 </div>
 
                 <!-- Mindfulness tip -->
-                <div class="card bg-gradient-to-br from-purple-50 to-purple-100 border-purple-200">
+                <div class="card rounded-xl bg-gradient-to-br from-purple-50 to-purple-100 border-purple-200">
                     <div class="text-4xl mb-4">🧘‍♀️</div>
                     <h3 class="text-lg font-bold text-purple-800 mb-3">Внимателност</h3>
                     <p class="text-purple-700 text-sm mb-4">
@@ -295,7 +287,7 @@
                 </div>
 
                 <!-- Social connection tip -->
-                <div class="card bg-gradient-to-br from-pink-50 to-pink-100 border-pink-200">
+                <div class="card rounded-xl bg-gradient-to-br from-pink-50 to-pink-100 border-pink-200">
                     <div class="text-4xl mb-4">👥</div>
                     <h3 class="text-lg font-bold text-pink-800 mb-3">Социјални врски</h3>
                     <p class="text-pink-700 text-sm mb-4">
@@ -307,7 +299,7 @@
                 </div>
 
                 <!-- Nutrition tip -->
-                <div class="card bg-gradient-to-br from-orange-50 to-orange-100 border-orange-200">
+                <div class="card rounded-xl bg-gradient-to-br from-orange-50 to-orange-100 border-orange-200">
                     <div class="text-4xl mb-4">🥗</div>
                     <h3 class="text-lg font-bold text-orange-800 mb-3">Здрава исхрана</h3>
                     <p class="text-orange-700 text-sm mb-4">
@@ -319,7 +311,7 @@
                 </div>
 
                 <!-- Professional help tip -->
-                <div class="card bg-gradient-to-br from-teal-50 to-teal-100 border-teal-200">
+                <div class="card rounded-xl bg-gradient-to-br from-teal-50 to-teal-100 border-teal-200">
                     <div class="text-4xl mb-4">🩺</div>
                     <h3 class="text-lg font-bold text-teal-800 mb-3">Професионална помош</h3>
                     <p class="text-teal-700 text-sm mb-4">
@@ -332,28 +324,7 @@
             </div>
         </div>
 
-        <!-- Crisis Support -->
-        <div class="mt-12">
-            <div class="card bg-gradient-to-r from-red-100 to-pink-100 border-red-200">
-                <div class="flex items-center space-x-4">
-                    <div class="text-6xl">🆘</div>
-                    <div class="flex-1">
-                        <h3 class="text-2xl font-bold text-red-800 mb-2">Потребна ти е итна помош?</h3>
-                        <p class="text-red-700 mb-4">
-                            Ако се чувствуваш во криза или имаш суицидални мисли, веднаш контактирај:
-                        </p>
-                        <div class="flex flex-wrap gap-4">
-                            <a href="tel:023061661" class="inline-flex items-center px-6 py-3 bg-red-600 hover:bg-red-700 text-white rounded-lg font-bold transition-all duration-200">
-                                📞 02 3061-661
-                            </a>
-                            <a href="tel:194" class="inline-flex items-center px-6 py-3 bg-red-600 hover:bg-red-700 text-white rounded-lg font-bold transition-all duration-200">
-                                🚨 194 (Итна помош)
-                            </a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
+
     </main>
 
     <!-- Footer -->

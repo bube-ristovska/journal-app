@@ -80,5 +80,5 @@ def history():
 
 @journal_bp.route('/prompts')
 def prompts():
-    categories = ['Самореflексија', 'Емоции', 'Цели', 'Односи', 'Благодарност']
+    categories = ['Саморефлексија', 'Емоции', 'Цели', 'Односи', 'Благодарност']
     return render_template('journal/prompts.html', categories=categories, questions=DAILY_QUESTIONS)

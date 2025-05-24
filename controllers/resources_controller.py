@@ -132,4 +132,4 @@ def education():
         content = EducationalContent.query.filter_by(age_group='teenagers').all()
 
     categories = list(set([c.category for c in content]))
-    return render_template('education.html', content=content, categories=categories)
+    return render_template('resources/education.html', content=content, categories=categories)

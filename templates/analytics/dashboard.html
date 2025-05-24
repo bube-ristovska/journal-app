@@ -46,7 +46,7 @@
                     <a href="/mood" class="nav-link">😊 Расположение</a>
                     <a href="/goals" class="nav-link">🎯 Цели</a>
                     <a href="/resources" class="nav-link">📚 Ресурси</a>
-                    <a href="/analytics" class="nav-link font-bold bg-purple-100">📊 Статистики</a>
+                    <a href="/analytics" class="nav-link">📊 Статистики</a>
                 </div>
 
                 <!-- Mobile menu button -->
@@ -78,8 +78,8 @@
     <main class="container mx-auto px-4 py-8 max-w-6xl">
         <!-- Header -->
         <div class="mb-8">
-            <h1 class="text-4xl font-bold text-purple-800 mb-2">📊 Твои Статистики</h1>
-            <p class="text-purple-600 text-lg">Преглед на твојот напредок и трендови</p>
+            <h1 class="text-4xl font-bold text-purple-800 mb-2">📊 Твои статистики</h1>
+            <p class="text-purple-600 text-lg">Преглед на твојот напредок</p>
         </div>
 
         <!-- Navigation tabs -->
@@ -89,24 +89,24 @@
                     Статистики
                 </a>
                 <a href="/analytics/insights" class="px-6 py-3 font-medium text-purple-600 hover:text-purple-700 hover:bg-purple-50 rounded-t-lg transition-all">
-                    Увиди
+                    Препораки
                 </a>
             </div>
         </div>
 
         <!-- Quick Stats Cards -->
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-            <div class="card bg-gradient-to-br from-purple-500 to-purple-600 text-white">
+            <div class="card rounded-xl p-2 bg-gradient-to-br from-purple-500 to-purple-600 text-white">
                 <div class="flex items-center justify-between">
                     <div>
-                        <p class="text-purple-100 text-sm font-medium">Дневнички записи</p>
+                        <p class="text-purple-100 text-sm font-medium">Записи во дневник</p>
                         <p class="text-3xl font-bold">{{ stats.journal_entries }}</p>
                     </div>
                     <div class="text-4xl opacity-80">📝</div>
                 </div>
             </div>
 
-            <div class="card bg-gradient-to-br from-blue-500 to-blue-600 text-white">
+            <div class="card rounded-xl p-2 bg-gradient-to-br from-blue-500 to-blue-600 text-white">
                 <div class="flex items-center justify-between">
                     <div>
                         <p class="text-blue-100 text-sm font-medium">Активни цели</p>
@@ -116,7 +116,7 @@
                 </div>
             </div>
 
-            <div class="card bg-gradient-to-br from-green-500 to-green-600 text-white">
+            <div class="card rounded-xl p-2 bg-gradient-to-br from-green-500 to-green-600 text-white">
                 <div class="flex items-center justify-between">
                     <div>
                         <p class="text-green-100 text-sm font-medium">Завршени цели</p>
@@ -126,7 +126,7 @@
                 </div>
             </div>
 
-            <div class="card bg-gradient-to-br from-pink-500 to-pink-600 text-white">
+            <div class="card rounded-xl p-2 bg-gradient-to-br from-pink-500 to-pink-600 text-white">
                 <div class="flex items-center justify-between">
                     <div>
                         <p class="text-pink-100 text-sm font-medium">Записи за расположение</p>
@@ -153,7 +153,7 @@
 
             <!-- Weekly Mood Average -->
             <div class="space-y-6">
-                <div class="card bg-gradient-to-r from-purple-100 to-pink-100">
+                <div class="card rounded-xl bg-gradient-to-r from-purple-100 to-pink-100">
                     <h3 class="text-xl font-bold text-purple-800 mb-4">📊 Неделен просек</h3>
                     <div class="flex items-center justify-center">
                         <div class="text-center">
@@ -182,14 +182,17 @@
                 <div class="card">
                     <h3 class="text-xl font-bold text-purple-800 mb-4">⚡ Брзи акции</h3>
                     <div class="space-y-3">
-                        <a href="/mood" class="block btn-secondary text-center">
+                        <a href="/mood"     class="inline-block bg-white border border-purple-400 text-purple-700 font-semibold rounded-full px-6 py-3 shadow hover:bg-purple-50 transition-all duration-300"
+>
                             😊 Запиши расположение
                         </a>
-                        <a href="/journal" class="block btn-secondary text-center">
-                            📝 Нов дневнички запис
+                        <a href="/journal"    class="inline-block bg-white border border-purple-400 text-purple-700 font-semibold rounded-full px-6 py-3 shadow hover:bg-purple-50 transition-all duration-300"
+>
+                            📝 Нов запис во дневник
                         </a>
-                        <a href="/analytics/insights" class="block btn-primary text-center">
-                            💡 Погледни увиди
+                        <a href="/analytics/insights"     class="inline-block bg-white border border-purple-400 text-purple-700 font-semibold rounded-full px-6 py-3 shadow hover:bg-purple-50 transition-all duration-300"
+>
+                            💡 Погледни препораки
                         </a>
                     </div>
                 </div>
@@ -198,7 +201,7 @@
 
         <!-- Habit Completion Rates -->
         <div class="card">
-            <h2 class="text-2xl font-bold text-purple-800 mb-6">✅ Успешност на навики</h2>
+            <h2 class="text-2xl font-bold text-purple-800 mb-6">✅ Месечен прогрес на навики</h2>
             {% if habit_stats %}
                 <div class="space-y-4">
                     {% for habit in habit_stats %}

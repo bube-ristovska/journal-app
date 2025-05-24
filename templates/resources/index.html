@@ -19,7 +19,7 @@
     <!-- Resource Categories Grid -->
     <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
         <!-- Crisis Resources -->
-        <div class="card group hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2">
+        <div class="card  rounded-xl group hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2">
             <div class="text-center mb-6">
                 <div class="inline-flex items-center justify-center w-16 h-16 bg-red-100 rounded-full mb-4 group-hover:bg-red-200 transition-colors duration-300">
                     <span class="text-3xl">🆘</span>
@@ -45,13 +45,13 @@
                 </div>
             </div>
 
-            <a href="{{ url_for('resources.crisis') }}" class="btn-primary w-full text-center block">
-                Пристапи кон ресурси
+            <a href="tel:00000000" class="btn-primary w-full text-center block">
+                Телефонски број за помош: 0215-315
             </a>
         </div>
 
         <!-- Educational Content -->
-        <div class="card group hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2">
+        <div class="card  rounded-xl group hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2">
             <div class="text-center mb-6">
                 <div class="inline-flex items-center justify-center w-16 h-16 bg-blue-100 rounded-full mb-4 group-hover:bg-blue-200 transition-colors duration-300">
                     <span class="text-3xl">📖</span>
@@ -83,7 +83,7 @@
         </div>
 
         <!-- Quick Help -->
-        <div class="card group hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2">
+        <div class="card  rounded-xl group hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2">
             <div class="text-center mb-6">
                 <div class="inline-flex items-center justify-center w-16 h-16 bg-green-100 rounded-full mb-4 group-hover:bg-green-200 transition-colors duration-300">
                     <span class="text-3xl">💡</span>
@@ -112,30 +112,6 @@
             <button onclick="showQuickHelp()" class="btn-primary w-full">
                 Покажи техники
             </button>
-        </div>
-    </div>
-
-    <!-- Important Notice -->
-    <div class="bg-yellow-50 border-l-4 border-yellow-400 p-6 rounded-lg">
-        <div class="flex items-start">
-            <div class="flex-shrink-0">
-                <span class="text-2xl">⚠️</span>
-            </div>
-            <div class="ml-3">
-                <h3 class="text-lg font-semibold text-yellow-800 mb-2">Важно известување</h3>
-                <p class="text-yellow-700 mb-4">
-                    Ако се чувствуваш во непосредна опасност или имаš мисли за самоповредување,
-                    веднаш контактирај итни служби или кризна линија.
-                </p>
-                <div class="flex flex-wrap gap-4">
-                    <a href="tel:194" class="inline-flex items-center text-yellow-800 hover:text-yellow-900 font-semibold">
-                        📞 Итна помош: 194
-                    </a>
-                    <a href="tel:023061661" class="inline-flex items-center text-yellow-800 hover:text-yellow-900 font-semibold">
-                        📞 Кризна линија: 02 3061-661
-                    </a>
-                </div>
-            </div>
         </div>
     </div>
 </div>

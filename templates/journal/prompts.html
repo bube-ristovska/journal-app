@@ -8,7 +8,7 @@
     <div class="text-center mb-8">
         <div class="text-6xl mb-4">💡</div>
         <h1 class="text-4xl font-bold text-purple-800 mb-2">Инспирација за пишување</h1>
-        <p class="text-purple-600 text-lg">Откријте нови начини за самореflексија и личен раст</p>
+        <p class="text-purple-600 text-lg">Откријте нови начини за личен раст</p>
     </div>
 
     <!-- Quick Start Section -->
@@ -25,7 +25,8 @@
             </div>
 
             <div class="flex flex-wrap justify-center gap-4">
-                <button id="get-random-question" class="btn-primary">
+                <button id="get-random-question"     class="bg-gradient-to-r from-purple-500 to-purple-700 text-white font-semibold rounded-full shadow-lg hover:shadow-xl hover:from-purple-600 hover:to-purple-800 transition-all duration-300 px-8 py-4"
+>
                     🎯 Дајте ми прашање
                 </button>
                 <button id="use-question" class="btn-secondary" style="display: none;">
@@ -38,11 +39,11 @@
     <!-- Categories Tabs -->
     <div class="mb-8">
         <div class="flex flex-wrap justify-center gap-2 mb-6">
-            <button class="category-tab active" data-category="all">
+            <button class="category-tab active  inline-block bg-white border border-purple-400 text-purple-700 font-semibold rounded-full px-6 py-3 shadow hover:bg-purple-50 transition-all duration-300" data-category="all">
                 🌟 Сите
             </button>
             {% for category in categories %}
-            <button class="category-tab" data-category="{{ category }}">
+            <button class="category-tab inline-block bg-white border border-purple-400 text-purple-700 font-semibold rounded-full px-6 py-3 shadow hover:bg-purple-50 transition-all duration-300" data-category="{{ category }}">
                 {% if category == 'Самореflексија' %}🔍
                 {% elif category == 'Емоции' %}❤️
                 {% elif category == 'Цели' %}🎯
@@ -58,9 +59,9 @@
     <!-- Prompts Grid -->
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8" id="prompts-grid">
         <!-- Self-reflection prompts -->
-        <div class="prompt-card card hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2" data-category="Самореflексија">
+        <div class="prompt-card card p-2 rounded-xl hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2" data-category="Самореflексија">
             <div class="text-3xl mb-3">🔍</div>
-            <h3 class="text-lg font-semibold text-purple-800 mb-3">Самореflексија</h3>
+            <h3 class="text-lg font-semibold text-purple-800 mb-3">Саморефлексија</h3>
             <div class="space-y-2 text-sm text-purple-700">
                 <p>• Што нов научив за себе оваа недела?</p>
                 <p>• Кога последен пат излегов од мојата зона на комфор?</p>
@@ -74,7 +75,7 @@
         </div>
 
         <!-- Emotions prompts -->
-        <div class="prompt-card card hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2" data-category="Емоции">
+        <div class="prompt-card card p-2 rounded-xl hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2" data-category="Емоции">
             <div class="text-3xl mb-3">❤️</div>
             <h3 class="text-lg font-semibold text-purple-800 mb-3">Емоции</h3>
             <div class="space-y-2 text-sm text-purple-700">
@@ -90,7 +91,7 @@
         </div>
 
         <!-- Goals prompts -->
-        <div class="prompt-card card hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2" data-category="Цели">
+        <div class="prompt-card card p-2 rounded-xl hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2" data-category="Цели">
             <div class="text-3xl mb-3">🎯</div>
             <h3 class="text-lg font-semibold text-purple-800 mb-3">Цели</h3>
             <div class="space-y-2 text-sm text-purple-700">
@@ -106,7 +107,7 @@
         </div>
 
         <!-- Relationships prompts -->
-        <div class="prompt-card card hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2" data-category="Односи">
+        <div class="prompt-card card p-2 rounded-xl hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2" data-category="Односи">
             <div class="text-3xl mb-3">👥</div>
             <h3 class="text-lg font-semibold text-purple-800 mb-3">Односи</h3>
             <div class="space-y-2 text-sm text-purple-700">
@@ -122,7 +123,7 @@
         </div>
 
         <!-- Gratitude prompts -->
-        <div class="prompt-card card hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2" data-category="Благодарност">
+        <div class="prompt-card card p-2 rounded-xl hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2" data-category="Благодарност">
             <div class="text-3xl mb-3">🙏</div>
             <h3 class="text-lg font-semibold text-purple-800 mb-3">Благодарност</h3>
             <div class="space-y-2 text-sm text-purple-700">
@@ -138,7 +139,7 @@
         </div>
 
         <!-- Creative prompts -->
-        <div class="prompt-card card hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2" data-category="Креативност">
+        <div class="prompt-card card p-2 rounded-xl hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2" data-category="Креативност">
             <div class="text-3xl mb-3">🎨</div>
             <h3 class="text-lg font-semibold text-purple-800 mb-3">Креативност</h3>
             <div class="space-y-2 text-sm text-purple-700">
@@ -171,7 +172,7 @@
     </div>
 
     <!-- Writing Tips Section -->
-    <div class="card mb-8 bg-gradient-to-r from-blue-50 to-indigo-50">
+    <div class="card mb-8 p-4 rounded-xl bg-gradient-to-r from-blue-50 to-indigo-50">
         <h2 class="text-2xl font-bold text-purple-800 mb-6 text-center">✍️ Совети за пишување</h2>
         <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
             <div class="text-center">
@@ -198,11 +199,8 @@
             ✏️ Започни со пишување
         </a>
         <a href="{{ url_for('journal.history') }}" class="btn-secondary">
-            📚 Погледај записи
+            📚 Историја
         </a>
-        <button id="save-prompts" class="btn-secondary">
-            💾 Зачувај омилени прашања
-        </button>
     </div>
 </div>
 

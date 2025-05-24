@@ -29,7 +29,7 @@
                 </div>
                 <p class="text-sm font-medium text-green-800">Дневник</p>
                 <p class="text-xs text-green-600">
-                    {% if quick_stats.journal_done %}Готово{% else %}Чека{% endif %}
+                    {% if quick_stats.journal_done %}Готово{% else %}Нема запис за денес{% endif %}
                 </p>
             </div>
 
@@ -57,73 +57,29 @@
         </div>
     </div>
 </div>
+    <h2 class="text-2xl font-bold text-purple-800 mb-6">Слика на денот</h2>
 
-<!-- Quick Actions -->
-<div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
-    <!-- Journal Entry -->
-    <div class="card hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-1">
-        <div class="text-center">
-            <div class="text-5xl mb-4">📝</div>
-            <h3 class="text-xl font-bold text-purple-800 mb-2">Дневник</h3>
-            <p class="text-purple-600 mb-4">Запиши ги твоите мисли и чувства</p>
-            <a href="{{ url_for('journal.index') }}" class="btn-primary inline-block">
-                {% if quick_stats.journal_done %}Прегледај{% else %}Почни да пишуваш{% endif %}
-            </a>
-        </div>
-    </div>
-
-    <!-- Mood Tracking -->
-    <div class="card hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-1">
-        <div class="text-center">
-            <div class="text-5xl mb-4">😊</div>
-            <h3 class="text-xl font-bold text-purple-800 mb-2">Расположение</h3>
-            <p class="text-purple-600 mb-4">Следи го твоето секојдневно расположение</p>
-            <a href="{{ url_for('mood.index') }}" class="btn-primary inline-block">
-                {% if quick_stats.mood_logged %}Прегледај{% else %}Додај расположение{% endif %}
-            </a>
-        </div>
-    </div>
-
-    <!-- Habits -->
-    <div class="card hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-1">
-        <div class="text-center">
-            <div class="text-5xl mb-4">✅</div>
-            <h3 class="text-xl font-bold text-purple-800 mb-2">Навики</h3>
-            <p class="text-purple-600 mb-4">Гради позитивни секојдневни навики</p>
-            <a href="{{ url_for('habits.index') }}" class="btn-primary inline-block">Управувај навики</a>
-        </div>
-    </div>
-
-    <!-- Goals -->
-    <div class="card hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-1">
-        <div class="text-center">
-            <div class="text-5xl mb-4">🎯</div>
-            <h3 class="text-xl font-bold text-purple-800 mb-2">Цели</h3>
-            <p class="text-purple-600 mb-4">Постави и следи ги твоите цели</p>
-            <a href="{{ url_for('goals.index') }}" class="btn-primary inline-block">Прегледај цели</a>
-        </div>
-    </div>
-
-    <!-- Resources -->
-    <div class="card hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-1">
-        <div class="text-center">
-            <div class="text-5xl mb-4">📚</div>
-            <h3 class="text-xl font-bold text-purple-800 mb-2">Ресурси</h3>
-            <p class="text-purple-600 mb-4">Корисни совети и техники</p>
-            <a href="{{ url_for('resources.index') }}" class="btn-primary inline-block">Истражи</a>
-        </div>
-    </div>
-
-    <!-- Analytics -->
-    <div class="card hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-1">
-        <div class="text-center">
-            <div class="text-5xl mb-4">📊</div>
-            <h3 class="text-xl font-bold text-purple-800 mb-2">Статистики</h3>
-            <p class="text-purple-600 mb-4">Анализирај го твојот прогрес</p>
-            <a href="{{ url_for('analytics.dashboard') }}" class="btn-primary inline-block">Прегледај</a>
-        </div>
+<div class="my-8 rounded-xl overflow-hidden shadow-lg">
+    <img
+        src="https://i.ytimg.com/vi/23FAVAKWlq8/hq720.jpg?v=67dc44e9&sqp=CJTawsEG-oaymwEhCK4FEIIDSFryq4qpAxMIARUAAAAAGAElAADIQj0AgKJD&rs=AOn4CLBDi1TsnnP82N8ch4E5AngRh9BwpQ"
+        alt="Floral garden illustration"
+        class="w-full object-cover"
+    >
+</div>
+<div class="bg-gradient-to-br from-purple-50 to-pink-100 p-4 rounded-2xl shadow-md max-w-xs mx-auto mb-6">
+    <h3 class="text-lg font-semibold text-purple-800 mb-2 text-center">🎶 Музика за смирување</h3>
+    <div class="rounded-xl overflow-hidden">
+        <iframe
+            width="100%"
+            height="200"
+            src="https://www.youtube.com/embed/jfKfPfyJRdk?autoplay=1&loop=1&playlist=jfKfPfyJRdk"
+            frameborder="0"
+            allow="autoplay"
+            allowfullscreen
+        ></iframe>
     </div>
 </div>
+
 
 <!-- Mental Health Tips -->
 <div class="card">
@@ -169,26 +125,5 @@
 </div>
 
 <!-- Emergency Resources -->
-<div class="mt-8 card bg-gradient-to-r from-purple-600 to-pink-600 text-white">
-    <div class="text-center">
-        <h2 class="text-2xl font-bold mb-4">🆘 Итна помош</h2>
-        <p class="mb-4">Ако се чувствуваш во криза или имаш суицидални мисли:</p>
-        <div class="grid md:grid-cols-2 gap-4">
-            <div class="bg-white/20 p-4 rounded-xl">
-                <h3 class="font-bold mb-2">Национална линија за превенција</h3>
-                <a href="tel:023061661" class="text-2xl font-bold hover:underline">02 3061-661</a>
-                <p class="text-sm mt-1">24/7 достапно</p>
-            </div>
-            <div class="bg-white/20 p-4 rounded-xl">
-                <h3 class="font-bold mb-2">Спешна медицинска</h3>
-                <a href="tel:194" class="text-2xl font-bold hover:underline">194</a>
-                <p class="text-sm mt-1">Итни случаи</p>
-            </div>
-        </div>
-        <p class="mt-4 text-sm opacity-90">
-            Помни: Побарувањето помош е знак на сила, не на слабост.
-            Не си сам/а во оваа борба. 💜
-        </p>
-    </div>
-</div>
+
 {% endblock %}

@@ -1,12 +1,12 @@
 {% extends "base.html" %}
 
-{% block title %}Следење на Навики - МенталноЗдравје{% endblock %}
+{% block title %}Следење на навики - МенталноЗдравје{% endblock %}
 
 {% block content %}
 <div class="space-y-8">
     <!-- Header -->
     <div class="text-center">
-        <h1 class="text-4xl font-bold text-purple-800 mb-4">✅ Следење на Навики</h1>
+        <h1 class="text-4xl font-bold text-purple-800 mb-4">✅ Следење на навики</h1>
         <p class="text-purple-600 text-lg">
             {{ today.strftime('%d.%m.%Y') }} - Следи ги своите дневни навики за подобро здравје
         </p>
@@ -40,7 +40,7 @@
     <!-- Progress Bar -->
     <div class="card">
         <div class="flex items-center justify-between mb-4">
-            <h3 class="text-lg font-semibold text-purple-800">Денешен Прогрес</h3>
+            <h3 class="text-lg font-semibold text-purple-800">Денешен прогрес</h3>
             <span class="text-sm text-purple-600" id="progress-text">
                 {{ entries.values()|selectattr('completed')|list|length }} од {{ habits|length }} завршени
             </span>
@@ -100,11 +100,8 @@
     <!-- Action Buttons -->
     <div class="flex justify-center space-x-4">
         <a href="{{ url_for('habits.analytics') }}" class="btn-secondary">
-            📊 Погледни Статистики
+            📊 Погледни статистики
         </a>
-        <button onclick="exportProgress()" class="btn-secondary">
-            📥 Извези Прогрес
-        </button>
     </div>
 </div>
 
